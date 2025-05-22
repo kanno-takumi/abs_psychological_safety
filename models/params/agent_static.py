@@ -1,5 +1,5 @@
 class AgentStatic:
-    def __init__(self, id, gender, age, field_design, field_business, field_programming,
+    def __init__(self, id, gender, age,
                  value_to_cn, attitude, style, mental_strength, atmosphere, mood,
                  knowledge_dict):
         self.id = id
