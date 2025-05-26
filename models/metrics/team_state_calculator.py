@@ -13,5 +13,5 @@ class TeamStateCalculator:
         return sum(values) / len(values) if values else 0.0
 
     def calc_faultline(self, n_clusters=3):
-        from models.metrics.faultline_calculator import FaultlineCalculator
+        from utils.faultline_calculator import FaultlineCalculator
         return FaultlineCalculator(self.agents, n_clusters).calculate_faultline()
