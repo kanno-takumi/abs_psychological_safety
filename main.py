@@ -15,21 +15,25 @@ import numpy as np
 from models.params.agent import Agent
 
 # JSON読み込み
-agent_file_data = "agent1.json"
-agent_file_path = os.path.join("data", agent_file_data)
-with open(agent_file_path, "r") as f:
-    data = json.load(f)
+agents_file_data = "agents5.json"
+agents_file_path = os.path.join("data", agents_file_data)
+with open(agents_file_path, "r") as f:
+    agents_data_list = json.load(f)
 
+agents = []
+N = len(agents_data_list)  # 人数に応じて自動設定
+for agent_data in agents_data_list:
+    agent = Agent(agent_data, N)  # Agentクラスはdata(dict), num(人数)を受け取れるように
+    agents.append(agent)
 # numは1人でもとりあえず仮で2以上（他者用の配列を持たせるため）
-agent = Agent(data, num=2)
 
 
 # 出力確認
 # print("agent:",agent)
-print(f"ID: {agent.id}, Gender: {agent.gender}, Age: {agent.age}")
-print(f"Value to CN: ({agent.value_x}, {agent.value_y})")
-print(f"Knowledge: {agent.knowledge}")
-print(f"Trust shape: {agent.trust_or_resignation.shape}")
+print(f"ID: {agents[0].id}, Gender: {agents[0].gender}, Age: {agents[0].age}")
+print(f"Value to CN: ({agents[0].value_x}, {agents[0].value_y})")
+print(f"Knowledge: {agents[0].knowledge}")
+print(f"Trust shape: {agents[0].trust_or_resignation.shape}")
 
 
 
