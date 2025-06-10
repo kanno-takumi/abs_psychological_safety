@@ -22,13 +22,14 @@ agents_file_path = os.path.join("data", agents_file_data)
 with open(agents_file_path, "r") as f:
     agents_data_list = json.load(f)
 
+#agentの作成
 agents = []
 N = len(agents_data_list)  # 人数に応じて自動設定
 for agent_data in agents_data_list:
     agent = Agent(agent_data, agents)  #Agentクラスはdata(dict), num(人数)を受け取れるように
     agents.append(agent)
     
-#hierarchy,hierarchiesという要素を追加
+#agentにhierarchy,hierarchiesという要素を追加
 for agent in agents:
     agent.hierarchy = calc_hierarchy(0.5,0.5,agent.id,agents)
     agent.hierarchies = calc_hierarchies(0.5, 0.5, agent.id, agents)

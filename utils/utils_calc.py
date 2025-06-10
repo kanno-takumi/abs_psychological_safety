@@ -19,7 +19,7 @@ def calc_hierarchy(w1, w2, agent_id, agents):
     hierarchy = w1 * agent_i_skill_level + w2 * agent_i_age_level
     return hierarchy
 
-#hierarchyは一度だけ計算される。
+#to j に向けたヒエラルキー
 def calc_hierarchies(w1, w2, agent_id, agents):
     """
     agent_id: 対象のエージェントのID（int）
@@ -47,8 +47,11 @@ def calc_hierarchies(w1, w2, agent_id, agents):
     for agent_j in agents:
         if agent_j.id == agent_id:
             continue
-        
-        delta_skill = (agent_i.skill_score - agent_j.skill_score / skill_range)
+        print(agent_i.skill_score)
+        print(agent_j.skill_score)
+        print(skill_range)
+        delta_skill = (agent_i.skill_score - agent_j.skill_score) / skill_range
+        print(delta_skill)
         delta_age = (agent_i.age - agent_j.age) / age_range
         hierarchy = (w1 * delta_skill + w2 * delta_age) / (w1 + w2)    
         
