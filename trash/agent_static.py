@@ -16,7 +16,8 @@ class AgentStatic:
         # CNに関する知識スコア（辞書形式で保持）
         self.knowledge = knowledge_dict
         self.energy = knowledge_dict.energy
-        self.transport = knowledge_dict.industory
+        self.transport = knowledge_dict.transportat
+        self.industory = knowledge_dict.industory
         self.building = knowledge_dict.transport
         self.agriculture = knowledge_dict.agriculture
         self.waste = knowledge_dict.waste

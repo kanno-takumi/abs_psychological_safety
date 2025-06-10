@@ -1,10 +1,12 @@
 # models/metrics/agent_to_other.py
 import math
 
-def calc_similarity(agent_i, agent_j, max_age_diff=60):
+def calc_similarity(agent_i, agent_j):
     """
     agent_i と agent_j の類似度を [-1, 1] で返す。
     """
+    print(agent_i)
+    max_age_diff = 30 #一旦変数としておいておく。
     # 1. 雰囲気（-1~1 の差 → -1~1）
     atmosphere_diff = abs(agent_i.atmosphere - agent_j.atmosphere) / 2
     atmosphere_sim = 1 - atmosphere_diff  # [0, 1]
@@ -28,11 +30,14 @@ def calc_similarity(agent_i, agent_j, max_age_diff=60):
     age_sim = age_sim * 2 - 1
 
     # 5. 分野スコア（CN知識：1〜5 → -1~1）
-    fields = ["energy", "transport", "building", "agriculture", "waste", "knowledge_system"]
-    total_field_diff = sum(abs(getattr(agent_i, f) - getattr(agent_j, f)) for f in fields)
+    # 5. 分野スコア（CN知識：1〜5 → -1~1）
+    fields = ["energy", "transport", "building", "agriculture", "waste", "system"]
+    total_field_diff = sum(
+        abs(agent_i.knowledge[f] - agent_j.knowledge[f]) for f in fields
+    )
     avg_field_diff = total_field_diff / len(fields)
     field_sim = 1 - (avg_field_diff / 4)  # 最大差は4
-    field_sim = field_sim * 2 - 1
+    field_sim = field_sim * 2 - 1  # [0,1] → [-1,1]
 
     # 類似度の平均（-1 ~ 1）
     similarity = (atmosphere_sim + style_sim + value_sim + age_sim + field_sim) / 5

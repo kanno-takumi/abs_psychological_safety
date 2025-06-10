@@ -1,8 +1,8 @@
 # ABS/main.py
 import numpy as np
-from models.metrics.behavior_tendency_calculator import (
-    speak_probability_calculator, reaction_strength_calculator, expressed_attitude_calculator
-)
+# from models.metrics.behavior_tendency_calculator import (
+#     speak_probability_calculator, reaction_strength_calculator, expressed_attitude_calculator
+# )
 from models.actions.speech_input_processor import broadcast_update_interpersonal_risk
 from utils.risk_logger import log_interpersonal_risk
 import pandas as pd
@@ -12,10 +12,10 @@ import os
 #JSON読み込み
 import json
 import numpy as np
-from models.params.agent import Agent
+from models.initializer.agent import Agent
 
 # JSON読み込み
-agents_file_data = "agents5.json"
+agents_file_data = "newagent.json"
 agents_file_path = os.path.join("data", agents_file_data)
 with open(agents_file_path, "r") as f:
     agents_data_list = json.load(f)
@@ -23,20 +23,22 @@ with open(agents_file_path, "r") as f:
 agents = []
 N = len(agents_data_list)  # 人数に応じて自動設定
 for agent_data in agents_data_list:
-    agent = Agent(agent_data, N)  # Agentクラスはdata(dict), num(人数)を受け取れるように
+    agent = Agent(agent_data, N)  #Agentクラスはdata(dict), num(人数)を受け取れるように
     agents.append(agent)
 # numは1人でもとりあえず仮で2以上（他者用の配列を持たせるため）
 
 
 # 出力確認
 # print("agent:",agent)
-print(f"ID: {agents[0].id}, Gender: {agents[0].gender}, Age: {agents[0].age}")
-print(f"Value to CN: ({agents[0].value_x}, {agents[0].value_y})")
-print(f"Knowledge: {agents[0].knowledge}")
-print(f"Trust shape: {agents[0].trust_or_resignation.shape}")
 
 
+#"metrics"の関数に代入
+## 類似度計算
+# from models.metrics.agent_to_other_calculator import calc_similarity
+# similarity = calc_similarity(agents[0],agents[1])
+# print(similarity)
 
+print(agents[0])
 # # 2. シミュレーションループ
 # for step in range(N_STEPS):
 #     for agent in agents:
