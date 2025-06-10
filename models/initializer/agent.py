@@ -5,22 +5,18 @@ from utils.utils_calc import calc_hierarchy
 import pprint
 
 class Agent:
-    def __init__(self, data, num):
+    def __init__(self, data, agents):
      # #staticで初期値はメンバー依存
     # #Nの配列[id, gender, age...]
         self.id = data["id"]
         self.age = data["age"]
         self.skill = data["skill"] #この中にさらに4つある
+        self.skill_score = np.mean(list(self.skill.values()))
         self.value_to_cn = data["value_to_cn"]
         self.attitude = data["attitude"]
         self.assertiveness = data["assertiveness"]
         self.toughness = data["toughness"]
         self.extraversion = data["extraversion"]
-        
-        length = num - 1
-        self.trust_or_resignation = np.zeros(length)
-        self.interpersonal_risk = np.zeros(length)
-        self.similarity = np.zeros(length)
         
     def __str__(self):
         return pprint.pformat(self.__dict__, indent=2, sort_dicts=False)
