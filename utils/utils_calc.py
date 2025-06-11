@@ -26,15 +26,15 @@ def calc_hierarchies(w1, w2, agent_id, agents):
     agents: 全エージェント（list of Agent）
     w1,w2：重み
     """
-    print(agent_id)
-    print(agents)
+    # print(agent_id)
+    # print(agents)
     # agent_id に対応するエージェントを探す
     agent_i = next(agent for agent in agents if agent.id == agent_id)
 
     skill_score_list = [agent.skill_score for agent in agents]
     age_list = [agent.age for agent in agents]
-    print("skill_score_list")
-    print(skill_score_list)
+    # print("skill_score_list")
+    # print(skill_score_list)
     skill_range = max(skill_score_list) - min(skill_score_list)
     age_range = max(age_list) - min(age_list)
     
@@ -47,11 +47,11 @@ def calc_hierarchies(w1, w2, agent_id, agents):
     for agent_j in agents:
         if agent_j.id == agent_id:
             continue
-        print(agent_i.skill_score)
-        print(agent_j.skill_score)
-        print(skill_range)
+        # print(agent_i.skill_score)
+        # print(agent_j.skill_score)
+        # print(skill_range)
         delta_skill = (agent_i.skill_score - agent_j.skill_score) / skill_range
-        print(delta_skill)
+        # print(delta_skill)
         delta_age = (agent_i.age - agent_j.age) / age_range
         hierarchy = (w1 * delta_skill + w2 * delta_age) / (w1 + w2)    
         
@@ -59,8 +59,9 @@ def calc_hierarchies(w1, w2, agent_id, agents):
     return hierarchies
 
 def calc_efficacy(w1, w2, hierarchies, efficacy, reaction, agree, t):
+    # print("hierarchies",hierarchies)
     if t == 0:
-        efficacy = hierarchies
+        efficacy = hierarchies.copy()
     if t > 0:
         #辞書と辞書を足し算、掛け算
         reaction_agree = {key: reaction[key] * (1- agree[key]) for key in reaction}
@@ -68,7 +69,10 @@ def calc_efficacy(w1, w2, hierarchies, efficacy, reaction, agree, t):
         # efficacy = w1 * efficacy + w2 * reaction * (1 - agree)
     return efficacy
     
-def calc_risk(efficacy, toughness):
+def calc_risk(efficacy, toughness, pressure, t):
     #行列で用意。
-    risk = (1- toughness) * (1 - efficacy)
+    if t == 0:
+        risk = {key: (1 - toughness) * (1- efficacy[key]) for key in efficacy}
+    if t > 0:
+        print("t>0")
     return risk

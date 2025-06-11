@@ -16,6 +16,7 @@ from models.initializer.agent import Agent
 from utils.utils_calc import calc_hierarchies
 from utils.utils_calc import calc_hierarchy
 from utils.utils_calc import calc_efficacy
+from utils.utils_calc import calc_risk
 
 # JSON読み込み
 agents_file_data = "newagent.json"
@@ -36,20 +37,24 @@ for agent in agents:
     agent.hierarchies = calc_hierarchies(0.5, 0.5, agent.id, agents)
 
 #t=0の場合、動作確認済。
-print("calc_efficacy:",calc_efficacy(0.5,0.5,agents[0].hierarchies,0,0,0,t=0))
+for agent in agents:
+    agent.efficacy = calc_efficacy(0.5,0.5,agent.hierarchies,{},{},{},t=0)
+# print("calc_efficacy:",calc_efficacy(0.5,0.5,agents[0].hierarchies,{},{},{},t=0))
 
+#agentの中にパラメータとしてriskという要素を追加
+for agent in agents:
+    agent.risk = calc_risk(agent.efficacy,agent.toughness,{},t=0)
 # 出力確認
 # print("agent:",agent)
 
+for agent in agents:
+    print(agent)
 
 #"metrics"の関数に代入
 ## 類似度計算
 # from models.metrics.agent_to_other_calculator import calc_similarity
 # similarity = calc_similarity(agents[0],agents[1])
 # print(similarity)
-
-print(agents[0])
-print(agents[1])
 # # 2. シミュレーションループ
 # for step in range(N_STEPS):
 #     for agent in agents:
