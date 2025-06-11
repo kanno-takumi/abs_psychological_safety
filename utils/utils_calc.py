@@ -58,11 +58,14 @@ def calc_hierarchies(w1, w2, agent_id, agents):
         hierarchies[agent_j.id] = hierarchy    
     return hierarchies
 
-def calc_efficacy(w1, w2, hierarchy, efficacy, reaction, agree, t):
+def calc_efficacy(w1, w2, hierarchies, efficacy, reaction, agree, t):
     if t == 0:
-        efficacy = hierarchy
+        efficacy = hierarchies
     if t > 0:
-        efficacy = w1 * efficacy + w2 * reaction * (1 - agree)
+        #辞書と辞書を足し算、掛け算
+        reaction_agree = {key: reaction[key] * (1- agree[key]) for key in reaction}
+        efficacy = {key: efficacy[key] * w1 + reaction_agree[key] * w2 for key in reaction_agree}
+        # efficacy = w1 * efficacy + w2 * reaction * (1 - agree)
     return efficacy
     
 def calc_risk(efficacy, toughness):

@@ -15,6 +15,7 @@ import numpy as np
 from models.initializer.agent import Agent
 from utils.utils_calc import calc_hierarchies
 from utils.utils_calc import calc_hierarchy
+from utils.utils_calc import calc_efficacy
 
 # JSON読み込み
 agents_file_data = "newagent.json"
@@ -22,18 +23,20 @@ agents_file_path = os.path.join("data", agents_file_data)
 with open(agents_file_path, "r") as f:
     agents_data_list = json.load(f)
 
-#agentの作成
+#agentsの作成
 agents = []
 N = len(agents_data_list)  # 人数に応じて自動設定
 for agent_data in agents_data_list:
     agent = Agent(agent_data, agents)  #Agentクラスはdata(dict), num(人数)を受け取れるように
     agents.append(agent)
     
-#agentにhierarchy,hierarchiesという要素を追加
+#agentの中にパラメータとしてhierarchy,hierarchiesという要素を追加
 for agent in agents:
     agent.hierarchy = calc_hierarchy(0.5,0.5,agent.id,agents)
     agent.hierarchies = calc_hierarchies(0.5, 0.5, agent.id, agents)
 
+#t=0の場合、動作確認済。
+print("calc_efficacy:",calc_efficacy(0.5,0.5,agents[0].hierarchies,0,0,0,t=0))
 
 # 出力確認
 # print("agent:",agent)
