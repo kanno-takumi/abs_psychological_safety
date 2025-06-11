@@ -13,7 +13,7 @@ class Agent:
         self.skill = data["skill"] #この中にさらに4つある
         self.skill_score = np.mean(list(self.skill.values()))
         self.value_to_cn = data["value_to_cn"]
-        self.attitude = data["attitude"]
+        self.pressure = data["pressure"]
         self.assertiveness = data["assertiveness"]
         self.toughness = data["toughness"]
         self.extraversion = data["extraversion"]

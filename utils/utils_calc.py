@@ -76,3 +76,47 @@ def calc_risk(efficacy, toughness, pressure, t):
     if t > 0:
         print("t>0")
     return risk
+
+def calc_speak_probability(w1,w2,w3,assertiveness,extraversion,risk_mean):
+    speak_probability = (w1 * assertiveness + w2 * extraversion + w3 * risk_mean) / (w1+ w2 + w3)
+    return speak_probability
+
+def calc_reaction_probability(w1,w2,w3,agent_id,agents):
+    agent_i = next(agent for agent in agents if agent.id == agent_id)
+    assertiveness = agent_i.assertiveness
+    extraversion = agent_i.extraversion
+    risk = agent_i.risk
+    reaction_probabilities = {}
+    for agent_j in agents:
+        if agent_id == agent_j.id:
+            continue
+        risk_ij = agent_i.risk.get(agent_j.id)
+        reaction_probability =(w1 * assertiveness + w2 * extraversion + w3 * risk_ij)/(w1 + w2 + w3)
+        reaction_probabilities[agent_j.id] = reaction_probability
+    return reaction_probabilities
+
+def calc_agree_probability(agent_id,agents):
+    agent_i = next(agent for agent in agents if agent.id == agent_id)
+    agree_probabilities = {}
+    for agent_j in agents:
+        if agent_id == agent_j.id:
+            continue
+        dx = agent_i.value_to_cn['x_axis'] - agent_j.value_to_cn['x_axis']
+        dy = agent_i.value_to_cn['y_axis'] - agent_j.value_to_cn['y_axis']
+        distance = np.sqrt(dx**2 + dy**2)
+        agree_probability = 1 - (distance / np.sqrt(8))
+        agree_probabilities[agent_j.id] = agree_probability
+            
+    return agree_probabilities
+
+def calc_attitude_probability(w1,w2,θ,agent_id,agents):
+    agent_i = next(agent for agent in agents if agent.id == agent_id)
+    attitude_probabilities = {}
+    for agent_j in agents:
+        if agent_id == agent_j.id:
+            continue
+        risk_ij = agent_i.risk.get(agent_j.id)
+        attitude_probability = (w1 * agent_i.pressure + w2 * risk_ij) / (w1+w2)
+        attitude_probabilities[agent_j.id] = attitude_probability
+            
+    return attitude_probabilities

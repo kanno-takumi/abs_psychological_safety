@@ -17,6 +17,10 @@ from utils.utils_calc import calc_hierarchies
 from utils.utils_calc import calc_hierarchy
 from utils.utils_calc import calc_efficacy
 from utils.utils_calc import calc_risk
+from utils.utils_calc import calc_speak_probability
+from utils.utils_calc import calc_reaction_probability
+from utils.utils_calc import calc_agree_probability
+from utils.utils_calc import calc_attitude_probability
 
 # JSON読み込み
 agents_file_data = "newagent.json"
@@ -44,11 +48,26 @@ for agent in agents:
 #agentの中にパラメータとしてriskという要素を追加
 for agent in agents:
     agent.risk = calc_risk(agent.efficacy,agent.toughness,{},t=0)
-# 出力確認
-# print("agent:",agent)
+    agent.risk_mean = np.mean(list(agent.risk.values()))
+
+"""
+ここまでは初期値。
+ここからはループを使う？はず。
+まずはループなしで動くか試す。
+"""
 
 for agent in agents:
+    agent.speak_probability_mean = calc_speak_probability(1,1,1,agent.assertiveness,agent.extraversion,agent.risk_mean)
+    agent.reaction_probability = calc_reaction_probability(1,1,1,agent.id,agents)
+    agent.agree_probability = calc_agree_probability(agent.id,agents)
+    agent.attitude_probability = calc_attitude_probability(1,1,0.5,agent.id,agents)
+
+
+#agent中身の出力
+for agent in agents:
     print(agent)
+    
+    
 
 #"metrics"の関数に代入
 ## 類似度計算
