@@ -1,4 +1,6 @@
 import numpy as np
+import random
+import math
 
 
 #平均と比較した相対的な自分のヒエラルキー
@@ -120,3 +122,83 @@ def calc_attitude_probability(w1,w2,θ,agent_id,agents):
         attitude_probabilities[agent_j.id] = attitude_probability
             
     return attitude_probabilities
+
+
+# def speak_decision(speak_probability):
+#     #発言するかどうかを確率的に決定する。
+#     if random.uniform(0,1) < speak_probability:
+#     # if 0.8 < speak_probability:
+#         speak_boolean = 1
+#     else:
+#         speak_boolean = 0
+#     return speak_boolean
+
+import random
+
+def speak_decision(speak_probability, sigma=0.1,temperature=0.1):
+    """
+    正規分布に基づいて確率値を生成し、それを使って0/1を確率的に決定する。
+    
+    Parameters:
+    - speak_probability: 平均発言確率（0〜1）
+    - sigma: 標準偏差（デフォルトは0.1）
+
+    Returns:
+    - 1（発言）または 0（非発言）
+    """
+    # 正規分布から一時的な確率値を生成し、0〜1にクリップ
+    sampled = random.normalvariate(speak_probability, sigma)
+    clipped = max(0.0, min(1.0, sampled))
+    
+    # 確率を滑らかに二値化（ロジスティック関数を通す）
+    # 0.5 を中心に温度パラメータで鋭さを調整
+    logit = (clipped - 0.5) / temperature
+    prob = 1 / (1 + math.exp(-logit))
+    
+    # その確率に基づいて発言するかどうかを決定
+    return 1 if random.random() < prob else 0
+
+        
+def speaker_decision(speaks_dict):
+    candidates = [agent_id for agent_id, speak in speaks_dict.items() if speak ==1]
+    
+    if candidates:
+        return random.choice(candidates)
+    else:
+        return None
+    
+    
+def agree_to_speaker(agent,speaker_id,sigma=0.1):
+    #agent_id == speaker_id の時はagent_prob = 0を返す
+    print(agent.id)
+    print(speaker_id)
+    
+    if agent.id == speaker_id:
+        agree_prob = 0.0
+        raw = 0.0
+    else:
+        agree_prob = agent.agree_probability.get(speaker_id)
+        raw = random.normalvariate(agree_prob,sigma)
+    clipped = max(0.0,min(1.0, raw))
+    return {speaker_id: clipped}
+
+import random
+
+def reaction_decision(agent_i, speaker_id, agree_to_speaker, alpha1=0.5, alpha2=0.5):
+    """
+    agent_i: リアクションする側のエージェント（i）
+    speaker_id: 発言者のID（j）
+    
+    return: reaction_ij を {speaker_id: 1 or 0} の辞書で返す
+    """
+    key = f"ito{speaker_id}"
+
+    if agent_i.id == speaker_id:
+        return {speaker_id: 0}  # 自分自身にはリアクションしない
+
+    reaction_prob = agent_i.reaction_probability.get(key, 0.5)
+    agree_deviation = abs(0.5 - agree_to_speaker[speaker_id])
+    combined_prob = (alpha1 * reaction_prob + alpha2 * agree_deviation) / (alpha1 + alpha2)
+
+    reaction = 1 if random.random() < combined_prob else 0
+    return {speaker_id: reaction}
