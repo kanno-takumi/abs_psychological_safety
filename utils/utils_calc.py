@@ -111,7 +111,7 @@ def calc_agree_probability(agent_id,agents):
             
     return agree_probabilities
 
-def calc_attitude_probability(w1,w2,θ,agent_id,agents):
+def calc_attitude_probability(w1,w2,agent_id,agents):
     agent_i = next(agent for agent in agents if agent.id == agent_id)
     attitude_probabilities = {}
     for agent_j in agents:
@@ -202,3 +202,56 @@ def reaction_decision(agent_i, speaker_id, agree_to_speaker, alpha1=0.5, alpha2=
 
     reaction = 1 if random.random() < combined_prob else 0
     return {speaker_id: reaction}
+
+def reactor_decision(reaction_dict):
+    candidates = []
+    for agent_id, reaction in reaction_dict.items():
+        value = list(reaction.values())[0]
+        if value ==1:
+            candidates.append(agent_id)
+    if candidates:
+        return random.choice(candidates)
+    else:
+        return None
+    
+
+def attitude_result(attitude_probability, to_id):
+    attitude = attitude_probability.get(to_id, None)#基本的にはattitude_probabilityのto_id番目を取得。なければ0
+    return {to_id:attitude}
+
+
+
+#学習モデル
+##risk
+def update_risk(agent_id, agents, attitude, alpha1, alpha2):
+    """
+    agent_i が持つ他者に対する risk_ijを更新。
+    """
+    agent_i = next(agent for agent in agents if agent.id == agent_id)
+    for agent_j in agents:
+        if agent_i.id == agent_j.id:
+            continue
+    
+        #risk_ij
+        old_risk = agent_i.risk.get(agent_j.id)
+        att_ji = list(attitude.values())[0]
+        agent_i.risk[agent_j.id] = alpha1 * old_risk + alpha2 * att_ji
+    return agent_i.risk
+
+##efficacy
+def update_risk(agent_id, agents, agree, reaction, alpha1, alpha2):
+    """
+    agent_i が持つ他者に対する efficacy_ijを更新。
+    """
+    agent_i = next(agent for agent in agents if agent.id == agent_id)
+    for agent_j in agents:
+        if agent_i.id == agent_j.id:
+            continue
+    # ---efficacy_ij ---
+        old_eff = agent_i.efficacy.get(agent_j.id, 0.5)
+        agree_ji = agree_to_speaker(agent_j, agent_i.id, weight=0.1)
+        reaction_ji_dict = reaction_decision(agent_j, agent_i.id, agree_ji)
+        reaction_ji = list(reaction_ji_dict.values())[0]
+        new_eff = alpha1 * old_eff + alpha2 * reaction_ji * (1 - agree_ji)
+        agent_i.efficacy[agent_j.id] = new_eff
+    return agent_i.efficacy

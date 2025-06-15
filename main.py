@@ -25,6 +25,8 @@ from utils.utils_calc import speak_decision
 from utils.utils_calc import speaker_decision
 from utils.utils_calc import agree_to_speaker
 from utils.utils_calc import reaction_decision
+from utils.utils_calc import attitude_result
+from utils.utils_calc import reactor_decision
 
 # JSON読み込み
 agents_file_data = "newagent.json"
@@ -64,7 +66,7 @@ for agent in agents:
     agent.speak_probability_mean = calc_speak_probability(1,1,1,agent.assertiveness,agent.extraversion,agent.risk_mean)
     agent.reaction_probability = calc_reaction_probability(1,1,1,agent.id,agents)
     agent.agree_probability = calc_agree_probability(agent.id,agents)
-    agent.attitude_probability = calc_attitude_probability(1,1,0.5,agent.id,agents)
+    agent.attitude_probability = calc_attitude_probability(1,1,agent.id,agents)
 
 
 #agent中身の出力
@@ -80,12 +82,19 @@ for agent in agents:
 speaker = speaker_decision(speak_dict)
 print(f"speaker：agent{speaker}")
 
+reaction_dict = {}
 for agent in agents:
     agree = agree_to_speaker(agent,speaker,0.1)
     reaction = reaction_decision(agent,speaker,agree)
+    reaction_dict[agent.id] = reaction
+    attitude = attitude_result(agent.attitude_probability,speaker)
     print("agent",agent.id,":agree",agree)
     print("agent",agent.id,":reaction",reaction)
-
+    print("agent",agent.id,"attitude", attitude)
+    
+reactor = reactor_decision(reaction_dict)
+print(reaction_dict)
+print(f"reactor：agent{reactor}")
 #"metrics"の関数に代入
 ## 類似度計算
 # from models.metrics.agent_to_other_calculator import calc_similarity
