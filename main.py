@@ -3,8 +3,6 @@ import numpy as np
 # from models.metrics.behavior_tendency_calculator import (
 #     speak_probability_calculator, reaction_strength_calculator, expressed_attitude_calculator
 # )
-from models.actions.speech_input_processor import broadcast_update_interpersonal_risk
-from utils.risk_logger import log_interpersonal_risk
 import pandas as pd
 #main.py や simulate.py で次のようにインポート
 import config.simulation_config as cfg
@@ -27,6 +25,12 @@ from utils.utils_calc import agree_to_speaker
 from utils.utils_calc import reaction_decision
 from utils.utils_calc import attitude_result
 from utils.utils_calc import reactor_decision
+from utils.utils_calc import update_efficacy
+from utils.utils_calc import update_risk
+from models.simulation import run_inner_loop
+
+
+
 
 # JSON読み込み
 agents_file_data = "newagent.json"
@@ -79,41 +83,39 @@ for agent in agents:
     speak_dict[agent.id] = speak #agent.idをキーに発言を格納
     print(f"Agent{agent.id} ：{speak}")
 
-speaker = speaker_decision(speak_dict)
-print(f"speaker：agent{speaker}")
+speaker_id = speaker_decision(speak_dict)
+print(f"speaker：agent{speaker_id}")
 
 reaction_dict = {}
+agree_dict = {}
+attitude_dict = {}
 for agent in agents:
-    agree = agree_to_speaker(agent,speaker,0.1)
-    reaction = reaction_decision(agent,speaker,agree)
+    agree = agree_to_speaker(agent,speaker_id,0.1)
+    agree_dict[agent.id] = agree
+    reaction = reaction_decision(agent,speaker_id,agree)
     reaction_dict[agent.id] = reaction
-    attitude = attitude_result(agent.attitude_probability,speaker)
+    attitude = attitude_result(agent.attitude_probability,speaker_id)
+    attitude_dict[agent.id] = attitude
+    
     print("agent",agent.id,":agree",agree)
     print("agent",agent.id,":reaction",reaction)
     print("agent",agent.id,"attitude", attitude)
     
-reactor = reactor_decision(reaction_dict)
-print(reaction_dict)
-print(f"reactor：agent{reactor}")
-#"metrics"の関数に代入
-## 類似度計算
-# from models.metrics.agent_to_other_calculator import calc_similarity
-# similarity = calc_similarity(agents[0],agents[1])
-# print(similarity)
-# # 2. シミュレーションループ
-# for step in range(N_STEPS):
-#     for agent in agents:
-#         # 発言するかを判定
-#         agent.speak_probability = speak_probability_calculator(agent)
-#         if np.random.rand() < agent.speak_probability:
-#             agent.reaction_strength = reaction_strength_calculator()
-#             agent.expressed_attitude = expressed_attitude_calculator(agent)
-#             broadcast_update_interpersonal_risk(agent, agents)
+reactor_id = reactor_decision(reaction_dict)
+print(f"reaction_dict:{reaction_dict}")
+print(f"agree_dict:{agree_dict}")
 
-#     # ログ記録
-#     step_log = log_interpersonal_risk(step, agents)
-#     risk_log.append(step_log)
+print(f"reactor_id：{reactor_id}")
+reactor_agree = list(agree_dict[reactor_id].values())[0]
+reactor_attitude = list(attitude_dict[reactor_id].values())[0]
+print(f"reactor agree: {reactor_agree}")
+speaker = next(agent for agent in agents if agent.id == speaker_id)
+reactor = next(agent for agent in agents if agent.id == reactor_id)
+old_efficacy, updated_efficacy = update_efficacy(speaker,reactor,reactor_agree,0.5,0.5)
+print(f"old_efficacy:{old_efficacy},new_efficacy:{updated_efficacy}")
 
-# # 3. ログ出力（例：CSV保存）
-# all_logs = pd.concat(risk_log, ignore_index=True)
-# all_logs.to_csv("output/interpersonal_risk_log.csv", index=False)
+old_risk, updated_risk = update_risk(speaker,reactor,reactor_attitude,0.5,0.5,0.5)
+print(f"old_risk:{old_risk},updated_risk:{updated_risk}")
+
+
+print(run_inner_loop(agents))

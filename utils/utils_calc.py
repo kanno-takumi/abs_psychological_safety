@@ -219,39 +219,48 @@ def attitude_result(attitude_probability, to_id):
     attitude = attitude_probability.get(to_id, None)#基本的にはattitude_probabilityのto_id番目を取得。なければ0
     return {to_id:attitude}
 
+##efficacy
+def update_efficacy(speaker, reactor, agree, alpha1, alpha2):
+    """
+    speakerからreactorに対するefficacyのみを更新し、全体のefficacy辞書を返す。
 
+    Parameters:
+        speaker: Agentオブジェクト（発言者）
+        reactor: Agentオブジェクト（反応者）
+        agree: float（reactor → speaker の agree）
+        old_efficacy: dict（{agent_id: efficacy_ij}）
+        alpha1, alpha2: 重みパラメータ
+
+    Returns:
+        dict: 更新後の efficacy 辞書
+    """
+    old_efficacy = speaker.efficacy
+    updated_efficacy = speaker.efficacy.copy()
+
+    reaction = 1  # この関数が呼ばれた時点でreactorは反応済と仮定
+    old_value = updated_efficacy.get(reactor.id)
+    new_value = alpha1 * old_value + alpha2 * reaction * (1 - agree)
+
+    updated_efficacy[reactor.id] = new_value
+    print("newvalue",new_value)
+    return old_efficacy,updated_efficacy
 
 #学習モデル
 ##risk
-def update_risk(agent_id, agents, attitude, alpha1, alpha2):
+def update_risk(speaker, reactor, attitude, alpha1, alpha2, alpha3):
     """
     agent_i が持つ他者に対する risk_ijを更新。
     """
-    agent_i = next(agent for agent in agents if agent.id == agent_id)
-    for agent_j in agents:
-        if agent_i.id == agent_j.id:
-            continue
+    #risk_ij
+    efficacy = speaker.efficacy
+    old_risk = speaker.risk
+    updated_risk = old_risk.copy()
     
-        #risk_ij
-        old_risk = agent_i.risk.get(agent_j.id)
-        att_ji = list(attitude.values())[0]
-        agent_i.risk[agent_j.id] = alpha1 * old_risk + alpha2 * att_ji
-    return agent_i.risk
-
-##efficacy
-def update_risk(agent_id, agents, agree, reaction, alpha1, alpha2):
-    """
-    agent_i が持つ他者に対する efficacy_ijを更新。
-    """
-    agent_i = next(agent for agent in agents if agent.id == agent_id)
-    for agent_j in agents:
-        if agent_i.id == agent_j.id:
-            continue
-    # ---efficacy_ij ---
-        old_eff = agent_i.efficacy.get(agent_j.id, 0.5)
-        agree_ji = agree_to_speaker(agent_j, agent_i.id, weight=0.1)
-        reaction_ji_dict = reaction_decision(agent_j, agent_i.id, agree_ji)
-        reaction_ji = list(reaction_ji_dict.values())[0]
-        new_eff = alpha1 * old_eff + alpha2 * reaction_ji * (1 - agree_ji)
-        agent_i.efficacy[agent_j.id] = new_eff
-    return agent_i.efficacy
+    reaction = 1
+    old_value = updated_risk.get(reactor.id)
+    new_value = alpha1 * old_value + alpha2 * attitude + alpha3 * efficacy[reactor.id]
+    
+    
+    
+    updated_risk[reactor.id] = new_value
+    return old_risk, updated_risk
