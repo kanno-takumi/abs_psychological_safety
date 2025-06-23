@@ -28,11 +28,12 @@ from utils.utils_calc import reactor_decision
 from utils.utils_calc import update_efficacy
 from utils.utils_calc import update_risk
 from models.simulation import run_inner_loop
+from models.simulation import run_outer_loop
 
 
 
 
-# JSON読み込み
+#JSON読み込み
 agents_file_data = "newagent.json"
 agents_file_path = os.path.join("data", agents_file_data)
 with open(agents_file_path, "r") as f:
@@ -77,45 +78,50 @@ for agent in agents:
 for agent in agents:
     print(agent)
 
-speak_dict = {}    
-for agent in agents:
-    speak = speak_decision(agent.speak_probability_mean)
-    speak_dict[agent.id] = speak #agent.idをキーに発言を格納
-    print(f"Agent{agent.id} ：{speak}")
+# speak_dict = {}    
+# for agent in agents:
+#     speak = speak_decision(agent.speak_probability_mean)
+#     speak_dict[agent.id] = speak #agent.idをキーに発言を格納
+#     print(f"Agent{agent.id} ：{speak}")
 
-speaker_id = speaker_decision(speak_dict)
-print(f"speaker：agent{speaker_id}")
+# speaker_id = speaker_decision(speak_dict)
+# print(f"speaker：agent{speaker_id}")
 
-reaction_dict = {}
-agree_dict = {}
-attitude_dict = {}
-for agent in agents:
-    agree = agree_to_speaker(agent,speaker_id,0.1)
-    agree_dict[agent.id] = agree
-    reaction = reaction_decision(agent,speaker_id,agree)
-    reaction_dict[agent.id] = reaction
-    attitude = attitude_result(agent.attitude_probability,speaker_id)
-    attitude_dict[agent.id] = attitude
+# reaction_dict = {}
+# agree_dict = {}
+# attitude_dict = {}
+
+
+# for agent in agents:
+#     agree = agree_to_speaker(agent,speaker_id,0.1)
+#     agree_dict[agent.id] = agree
+#     reaction = reaction_decision(agent,speaker_id,agree)
+#     reaction_dict[agent.id] = reaction
+#     attitude = attitude_result(agent.attitude_probability,speaker_id)
+#     attitude_dict[agent.id] = attitude
     
-    print("agent",agent.id,":agree",agree)
-    print("agent",agent.id,":reaction",reaction)
-    print("agent",agent.id,"attitude", attitude)
+#     print("agent",agent.id,":agree",agree)
+#     print("agent",agent.id,":reaction",reaction)
+#     print("agent",agent.id,"attitude", attitude)
     
-reactor_id = reactor_decision(reaction_dict)
-print(f"reaction_dict:{reaction_dict}")
-print(f"agree_dict:{agree_dict}")
+# reactor_id = reactor_decision(reaction_dict)
+# print(f"reaction_dict:{reaction_dict}")
+# print(f"agree_dict:{agree_dict}")
 
-print(f"reactor_id：{reactor_id}")
-reactor_agree = list(agree_dict[reactor_id].values())[0]
-reactor_attitude = list(attitude_dict[reactor_id].values())[0]
-print(f"reactor agree: {reactor_agree}")
-speaker = next(agent for agent in agents if agent.id == speaker_id)
-reactor = next(agent for agent in agents if agent.id == reactor_id)
-old_efficacy, updated_efficacy = update_efficacy(speaker,reactor,reactor_agree,0.5,0.5)
-print(f"old_efficacy:{old_efficacy},new_efficacy:{updated_efficacy}")
+# print(f"reactor_id：{reactor_id}")
+# reactor_agree = list(agree_dict[reactor_id].values())[0]
+# reactor_attitude = list(attitude_dict[reactor_id].values())[0]
+# print(f"reactor agree: {reactor_agree}")
+# speaker = next(agent for agent in agents if agent.id == speaker_id)
+# reactor = next(agent for agent in agents if agent.id == reactor_id)
+# old_efficacy, updated_efficacy = update_efficacy(speaker,reactor,reactor_agree,0.5,0.5)
+# print(f"old_efficacy:{old_efficacy},new_efficacy:{updated_efficacy}")
 
-old_risk, updated_risk = update_risk(speaker,reactor,reactor_attitude,0.5,0.5,0.5)
-print(f"old_risk:{old_risk},updated_risk:{updated_risk}")
+# old_risk, updated_risk = update_risk(speaker,reactor,reactor_attitude,0.5,0.5,0.5)
+# print(f"old_risk:{old_risk},updated_risk:{updated_risk}")
 
-
-print(run_inner_loop(agents))
+# print(run_inner_loop(agents))
+log,t = run_outer_loop(agents,1000) 
+print(t)
+print(log)
+# print(run_outer_loop(agents,1000))

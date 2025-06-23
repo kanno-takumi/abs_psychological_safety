@@ -19,7 +19,8 @@ def calc_hierarchy(w1, w2, agent_id, agents):
     agent_i_age_level = (agent_i.age - age_score_mean) / age_range
     
     hierarchy = w1 * agent_i_skill_level + w2 * agent_i_age_level
-    return hierarchy
+    hierarchy_norm =  (hierarchy + 1) / 2 
+    return hierarchy_norm
 
 #to j に向けたヒエラルキー
 def calc_hierarchies(w1, w2, agent_id, agents):
@@ -56,27 +57,27 @@ def calc_hierarchies(w1, w2, agent_id, agents):
         # print(delta_skill)
         delta_age = (agent_i.age - agent_j.age) / age_range
         hierarchy = (w1 * delta_skill + w2 * delta_age) / (w1 + w2)    
-        
-        hierarchies[agent_j.id] = hierarchy    
+        hierarchy_norm = (hierarchy + 1) / 2
+        hierarchies[agent_j.id] = hierarchy_norm    
     return hierarchies
 
 def calc_efficacy(w1, w2, hierarchies, efficacy, reaction, agree, t):
     # print("hierarchies",hierarchies)
     if t == 0:
         efficacy = hierarchies.copy()
-    if t > 0:
-        #辞書と辞書を足し算、掛け算
-        reaction_agree = {key: reaction[key] * (1- agree[key]) for key in reaction}
-        efficacy = {key: efficacy[key] * w1 + reaction_agree[key] * w2 for key in reaction_agree}
-        # efficacy = w1 * efficacy + w2 * reaction * (1 - agree)
+    # if t > 0:
+    #     #辞書と辞書を足し算、掛け算
+    #     reaction_agree = {key: reaction[key] * (1- agree[key]) for key in reaction}
+    #     efficacy = {key: efficacy[key] * w1 + reaction_agree[key] * w2 for key in reaction_agree}
+    #     # efficacy = w1 * efficacy + w2 * reaction * (1 - agree)
     return efficacy
     
 def calc_risk(efficacy, toughness, pressure, t):
     #行列で用意。
     if t == 0:
         risk = {key: (1 - toughness) * (1- efficacy[key]) for key in efficacy}
-    if t > 0:
-        print("t>0")
+    # if t > 0:
+    #     print("t>0")
     return risk
 
 def calc_speak_probability(w1,w2,w3,assertiveness,extraversion,risk_mean):
@@ -170,8 +171,8 @@ def speaker_decision(speaks_dict):
     
 def agree_to_speaker(agent,speaker_id,sigma=0.1):
     #agent_id == speaker_id の時はagent_prob = 0を返す
-    print(agent.id)
-    print(speaker_id)
+    # print(agent.id)
+    # print(speaker_id)
     
     if agent.id == speaker_id:
         agree_prob = 0.0
@@ -242,7 +243,7 @@ def update_efficacy(speaker, reactor, agree, alpha1, alpha2):
     new_value = alpha1 * old_value + alpha2 * reaction * (1 - agree)
 
     updated_efficacy[reactor.id] = new_value
-    print("newvalue",new_value)
+    # print("newvalue",new_value)
     return old_efficacy,updated_efficacy
 
 #学習モデル
@@ -258,7 +259,7 @@ def update_risk(speaker, reactor, attitude, alpha1, alpha2, alpha3):
     
     reaction = 1
     old_value = updated_risk.get(reactor.id)
-    new_value = alpha1 * old_value + alpha2 * attitude + alpha3 * efficacy[reactor.id]
+    new_value = alpha1 * old_value + alpha2 * attitude + alpha3 * (1 - efficacy[reactor.id])
     
     
     

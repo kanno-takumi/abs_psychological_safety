@@ -10,22 +10,37 @@ from utils.utils_calc import update_efficacy
 from utils.utils_calc import update_risk
 
 
-def run_inner_loop(agents):
+def run_outer_loop(agents,max_steps):
+    t1 = 0
+    while t1 < max_steps:
+        logs, t2 = run_inner_loop(agents,t1)  # tを渡す場合
+        t1 = t1+t2
+    return logs,t1
+        
+        
+
+def run_inner_loop(agents,t1):
     logs = []
-    
+    t2 = 0
     speak_dict = {}    
     for agent in agents:
         speak = speak_decision(agent.speak_probability_mean)
         speak_dict[agent.id] = speak #agent.idをキーに発言を格納
-        print(f"Agent{agent.id} ：{speak}")
+        # print(f"Agent{agent.id} ：{speak}")
     speaker_id = speaker_decision(speak_dict)
+    
+    #発言者がいない場合(全員　speak ==0) logとt=1を返す
+    if speaker_id is None:
+        return logs, 1
     speaker = next(agent for agent in agents if agent.id == speaker_id)
     
     
-    t=0
+    
     while True:
-        print("whileは動いています")
-        print(t+1,"周目 ")
+        if t1 + t2 >= 1000:
+            return logs, t2
+        # print("whileは動いています")
+        # print(t2 + 1,"周目 ")
         #agree行動
         #attitude行動
         
@@ -40,13 +55,14 @@ def run_inner_loop(agents):
             attitude = attitude_result(agent.attitude_probability,speaker_id)
             attitude_dict[agent.id] = attitude
     
-            print("agent",agent.id,":agree",agree)
-            print("agent",agent.id,":reaction",reaction)
-            print("agent",agent.id,"attitude", attitude)
+            # print("agent",agent.id,":agree",agree)
+            # print("agent",agent.id,":reaction",reaction)
+            # print("agent",agent.id,"attitude", attitude)
         
         reactor_id = reactor_decision(reaction_dict)
+        
         if reactor_id is None:
-            return logs
+            return logs,t2+1 #このループで何回発言したか+Noneも含めて返す
         reactor = next(agent for agent in agents if agent.id == reactor_id)
         reactor_agree = list(agree_dict[reactor_id].values())[0]
         reactor_attitude = list(attitude_dict[reactor_id].values())[0]
@@ -69,8 +85,7 @@ def run_inner_loop(agents):
         # 7. 次のspeakerに交代（反応者が次の発言者）
         speaker = reactor
         speaker_id = reactor.id
-        
-        t = t + 1
+        t2 = t2 + 1
     
     # return logs
 
