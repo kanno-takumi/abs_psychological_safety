@@ -18,6 +18,18 @@ class Agent:
         self.toughness = data["toughness"]
         self.extraversion = data["extraversion"]
         
+        # dict型でキーがstrになってる可能性があるものをintに変換
+        self.hierarchies = {int(k): v for k, v in data.get("hierarchies", {}).items()}
+        self.efficacy = {int(k): v for k, v in data.get("efficacy", {}).items()}
+        self.risk = {int(k): v for k, v in data.get("risk", {}).items()}
+        self.reaction_probability = {int(k): v for k, v in data.get("reaction_probability", {}).items()}
+        self.agree_probability = {int(k): v for k, v in data.get("agree_probability", {}).items()}
+        self.attitude_probability = {int(k): v for k, v in data.get("attitude_probability", {}).items()}
+
+        self.hierarchy = data.get("hierarchy", 0)
+        self.risk_mean = data.get("risk_mean", 0)
+        self.speak_probability_mean = data.get("speak_probability_mean", 0)
+        
     def __str__(self):
         return pprint.pformat(self.__dict__, indent=2, sort_dicts=False)
         

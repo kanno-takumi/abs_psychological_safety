@@ -49,6 +49,7 @@ def calc_hierarchies(w1, w2, agent_id, agents):
     
     for agent_j in agents:
         if agent_j.id == agent_id:
+            # hierarchies[agent_j.id] 
             continue
         # print(agent_i.skill_score)
         # print(agent_j.skill_score)
@@ -61,10 +62,10 @@ def calc_hierarchies(w1, w2, agent_id, agents):
         hierarchies[agent_j.id] = hierarchy_norm    
     return hierarchies
 
-def calc_efficacy(w1, w2, hierarchies, efficacy, reaction, agree, t):
+def calc_efficacy(hierarchies):
     # print("hierarchies",hierarchies)
-    if t == 0:
-        efficacy = hierarchies.copy()
+    # if t == 0:
+    efficacy = hierarchies.copy()
     # if t > 0:
     #     #辞書と辞書を足し算、掛け算
     #     reaction_agree = {key: reaction[key] * (1- agree[key]) for key in reaction}
@@ -72,16 +73,21 @@ def calc_efficacy(w1, w2, hierarchies, efficacy, reaction, agree, t):
     #     # efficacy = w1 * efficacy + w2 * reaction * (1 - agree)
     return efficacy
     
+    #初期値
 def calc_risk(efficacy, toughness, pressure, t):
     #行列で用意。
-    if t == 0:
-        risk = {key: (1 - toughness) * (1- efficacy[key]) for key in efficacy}
+    # if t == 0:
+    risk = {key: (1 - toughness) * (1- efficacy[key]) for key in efficacy}
     # if t > 0:
     #     print("t>0")
     return risk
 
+def calc_risk_mean(risk):
+    risk_mean = np.mean(list(risk.values()))
+    return risk_mean
+
 def calc_speak_probability(w1,w2,w3,assertiveness,extraversion,risk_mean):
-    speak_probability = (w1 * assertiveness + w2 * extraversion + w3 * risk_mean) / (w1+ w2 + w3)
+    speak_probability = (w1 * assertiveness + w2 * extraversion + w3 * (1 - risk_mean)) / (w1+ w2 + w3)
     return speak_probability
 
 def calc_reaction_probability(w1,w2,w3,agent_id,agents):
@@ -136,7 +142,7 @@ def calc_attitude_probability(w1,w2,agent_id,agents):
 
 import random
 
-def speak_decision(speak_probability, sigma=0.1,temperature=0.1):
+def speak_decision(speak_probability_mean, sigma=0.1,temperature=0.1):
     """
     正規分布に基づいて確率値を生成し、それを使って0/1を確率的に決定する。
     
@@ -148,7 +154,7 @@ def speak_decision(speak_probability, sigma=0.1,temperature=0.1):
     - 1（発言）または 0（非発言）
     """
     # 正規分布から一時的な確率値を生成し、0〜1にクリップ
-    sampled = random.normalvariate(speak_probability, sigma)
+    sampled = random.normalvariate(speak_probability_mean, sigma)
     clipped = max(0.0, min(1.0, sampled))
     
     # 確率を滑らかに二値化（ロジスティック関数を通す）
@@ -175,13 +181,12 @@ def agree_to_speaker(agent,speaker_id,sigma=0.1):
     # print(speaker_id)
     
     if agent.id == speaker_id:
-        agree_prob = 0.0
-        raw = 0.0
+        return {agent.id: None}
     else:
-        agree_prob = agent.agree_probability.get(speaker_id)
+        agree_prob = agent.agree_probability.get(speaker_id,None)
         raw = random.normalvariate(agree_prob,sigma)
-    clipped = max(0.0,min(1.0, raw))
-    return {speaker_id: clipped}
+        clipped = max(0.0,min(1.0, raw))
+        return {speaker_id: clipped}
 
 import random
 
@@ -195,7 +200,7 @@ def reaction_decision(agent_i, speaker_id, agree_to_speaker, alpha1=0.5, alpha2=
     key = f"ito{speaker_id}"
 
     if agent_i.id == speaker_id:
-        return {speaker_id: 0}  # 自分自身にはリアクションしない
+        return {speaker_id: None}  # 自分自身にはリアクションしない
 
     reaction_prob = agent_i.reaction_probability.get(key, 0.5)
     agree_deviation = abs(0.5 - agree_to_speaker[speaker_id])

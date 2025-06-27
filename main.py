@@ -15,6 +15,7 @@ from utils.utils_calc import calc_hierarchies
 from utils.utils_calc import calc_hierarchy
 from utils.utils_calc import calc_efficacy
 from utils.utils_calc import calc_risk
+from utils.utils_calc import calc_risk_mean
 from utils.utils_calc import calc_speak_probability
 from utils.utils_calc import calc_reaction_probability
 from utils.utils_calc import calc_agree_probability
@@ -29,6 +30,7 @@ from utils.utils_calc import update_efficacy
 from utils.utils_calc import update_risk
 from models.simulation import run_inner_loop
 from models.simulation import run_outer_loop
+# from utils.logger import log_step
 
 
 
@@ -53,13 +55,13 @@ for agent in agents:
 
 #t=0の場合、動作確認済。
 for agent in agents:
-    agent.efficacy = calc_efficacy(0.5,0.5,agent.hierarchies,{},{},{},t=0)
+    agent.efficacy = calc_efficacy(agent.hierarchies)
 # print("calc_efficacy:",calc_efficacy(0.5,0.5,agents[0].hierarchies,{},{},{},t=0))
 
 #agentの中にパラメータとしてriskという要素を追加
 for agent in agents:
     agent.risk = calc_risk(agent.efficacy,agent.toughness,{},t=0)
-    agent.risk_mean = np.mean(list(agent.risk.values()))
+    agent.risk_mean = calc_risk_mean(agent.risk)
 
 """
 ここまでは初期値。
@@ -73,16 +75,17 @@ for agent in agents:
     agent.agree_probability = calc_agree_probability(agent.id,agents)
     agent.attitude_probability = calc_attitude_probability(1,1,agent.id,agents)
 
-
-#agent中身の出力
-for agent in agents:
-    print(agent)
-
+# logs = []
+run_outer_loop(agents,10) 
 # speak_dict = {}    
 # for agent in agents:
 #     speak = speak_decision(agent.speak_probability_mean)
 #     speak_dict[agent.id] = speak #agent.idをキーに発言を格納
 #     print(f"Agent{agent.id} ：{speak}")
+
+#agent中身の出力
+# for agent in agents:
+    # print(agent)
 
 # speaker_id = speaker_decision(speak_dict)
 # print(f"speaker：agent{speaker_id}")
@@ -121,7 +124,8 @@ for agent in agents:
 # print(f"old_risk:{old_risk},updated_risk:{updated_risk}")
 
 # print(run_inner_loop(agents))
-log,t = run_outer_loop(agents,1000) 
-print(t)
-print(log)
+# log,t = 
+
+# print(t)
+# print(log)
 # print(run_outer_loop(agents,1000))
