@@ -16,7 +16,7 @@ from utils.utils_calc import calc_hierarchy
 from utils.utils_calc import calc_efficacy
 from utils.utils_calc import calc_risk
 from utils.utils_calc import calc_risk_mean
-from utils.utils_calc import calc_speak_probability
+from utils.utils_calc import calc_speak_probability_mean
 from utils.utils_calc import calc_reaction_probability
 from utils.utils_calc import calc_agree_probability
 from utils.utils_calc import calc_attitude_probability
@@ -70,13 +70,13 @@ for agent in agents:
 """
 
 for agent in agents:
-    agent.speak_probability_mean = calc_speak_probability(1,1,1,agent.assertiveness,agent.extraversion,agent.risk_mean)
+    agent.speak_probability_mean = calc_speak_probability_mean(1,1,1,agent.assertiveness,agent.extraversion,agent.risk_mean)
     agent.reaction_probability = calc_reaction_probability(1,1,1,agent.id,agents)
     agent.agree_probability = calc_agree_probability(agent.id,agents)
     agent.attitude_probability = calc_attitude_probability(1,1,agent.id,agents)
 
 # logs = []
-run_outer_loop(agents,10) 
+run_outer_loop(agents,1000) 
 # speak_dict = {}    
 # for agent in agents:
 #     speak = speak_decision(agent.speak_probability_mean)

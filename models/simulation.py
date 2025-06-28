@@ -10,6 +10,10 @@ from utils.utils_calc import update_efficacy
 from utils.utils_calc import update_risk
 from utils.logger import log_step
 from utils.utils_calc import calc_risk_mean
+from utils.utils_calc import calc_speak_probability_mean
+from utils.utils_calc import calc_reaction_probability
+from utils.utils_calc import calc_agree_probability
+from utils.utils_calc import calc_attitude_probability
 
 #t1はouterループ（全体）の時間を持つ。　行動のステップ数(発言なしを含む)
 #t2はinnerループ内の時間を持つ。　reactionの数
@@ -84,11 +88,31 @@ def run_inner_loop(agents,t1,logs,max_steps):
         #学習
         _,updated_efficacy = update_efficacy(speaker,reactor,reactor_agree,0.5,0.5)
         _, updated_risk = update_risk(speaker,reactor,reactor_attitude,1/3,1/3,1/3)
-        update_risk_mean = calc_risk_mean(speaker.risk)
-            
-        speaker.efficacy = updated_efficacy
-        speaker.risk = updated_risk
-        speaker.risk_mean = update_risk_mean
+        update_risk_mean = calc_risk_mean(updated_risk)
+        update_speak_probability_mean = calc_speak_probability_mean(1,1,1,speaker.assertiveness,speaker.extraversion,update_risk_mean)
+        update_reaction_probability = calc_reaction_probability(1,1,1,speaker.id,agents)
+        update_agree_probability = calc_agree_probability(speaker.id,agents)
+        update_attitude_probability = calc_attitude_probability(1,1,speaker.id,agents)
+        
+        #speakerのパラメータを更新している（agentとは区別される）    
+        # speaker.efficacy = updated_efficacy
+        # speaker.risk = updated_risk
+        # speaker.risk_mean = update_risk_mean
+        
+        # agentsリスト内にも反映
+        for idx, agent in enumerate(agents):
+            if agent.id == speaker_id:
+                agents[idx].efficacy = updated_efficacy
+                agents[idx].risk = updated_risk
+                agents[idx].risk_mean = update_risk_mean
+                agents[idx].speak_probability_mean =update_speak_probability_mean
+                agents[idx].reaction_probability = update_reaction_probability
+                agents[idx].agree_probability = update_agree_probability
+                agents[idx].attitude_probability = update_attitude_probability
+                
+
+                break
+        
         
         print("agent",speaker_id,"efficacy", speaker.efficacy )
         

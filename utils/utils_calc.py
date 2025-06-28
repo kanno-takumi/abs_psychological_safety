@@ -86,7 +86,7 @@ def calc_risk_mean(risk):
     risk_mean = np.mean(list(risk.values()))
     return risk_mean
 
-def calc_speak_probability(w1,w2,w3,assertiveness,extraversion,risk_mean):
+def calc_speak_probability_mean(w1,w2,w3,assertiveness,extraversion,risk_mean):
     speak_probability = (w1 * assertiveness + w2 * extraversion + w3 * (1 - risk_mean)) / (w1+ w2 + w3)
     return speak_probability
 
