@@ -3,23 +3,34 @@ import random
 import math
 
 
-#平均と比較した相対的な自分のヒエラルキー
-def calc_hierarchy(w1, w2, agent_id, agents):
+def calc_hierarchy_mean(w1, w2, agent_id, agents):
     agent_i = next(agent for agent in agents if agent.id == agent_id)
-    
+
     age_list = [agent.age for agent in agents]
     skill_score_list = [agent.skill_score for agent in agents]
-    
+
     skill_range = max(skill_score_list) - min(skill_score_list)
-    age_range = max(age_list) - min(age_list)
-    
+    age_range   = max(age_list) - min(age_list)
+
     skill_score_mean = np.mean(skill_score_list)
-    age_score_mean = np.mean(age_list)
-    agent_i_skill_level = (agent_i.skill_score - skill_score_mean) / skill_range
-    agent_i_age_level = (agent_i.age - age_score_mean) / age_range
-    
-    hierarchy = w1 * agent_i_skill_level + w2 * agent_i_age_level
-    hierarchy_norm =  (hierarchy + 1) / 2 
+    age_score_mean   = np.mean(age_list)
+
+    # レンジ0ガード
+    agent_i_skill_level = 0.0 if skill_range == 0 else (agent_i.skill_score - skill_score_mean) / skill_range
+    agent_i_age_level   = 0.0 if age_range   == 0 else (agent_i.age         - age_score_mean)   / age_range
+
+    # 重みをL1正規化（|w1|+|w2|=1 になるように）
+    w_norm = abs(w1) + abs(w2)
+    if w_norm == 0:
+        w1n, w2n = 0.5, 0.5
+    else:
+        w1n, w2n = w1 / w_norm, w2 / w_norm
+
+    hierarchy = w1n * agent_i_skill_level + w2n * agent_i_age_level
+
+    # [-1,1] を [0,1] に射影 & 念のためclip
+    hierarchy_norm = (hierarchy + 1) / 2
+    hierarchy_norm = float(np.clip(hierarchy_norm, 0.0, 1.0))
     return hierarchy_norm
 
 #to j に向けたヒエラルキー
@@ -54,7 +65,9 @@ def calc_hierarchies(w1, w2, agent_id, agents):
         # print(agent_i.skill_score)
         # print(agent_j.skill_score)
         # print(skill_range)
-        delta_skill = (agent_i.skill_score - agent_j.skill_score) / skill_range
+        # delta_skill = (agent_i.skill_score - agent_j.skill_score) / skill_range
+        #平均で割らない
+        delta_skill = (agent_i.skill_score - agent_j.skill_score)
         # print(delta_skill)
         delta_age = (agent_i.age - agent_j.age) / age_range
         hierarchy = (w1 * delta_skill + w2 * delta_age) / (w1 + w2)    

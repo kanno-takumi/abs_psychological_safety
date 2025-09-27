@@ -1,21 +1,24 @@
 # ABM Project for Group Work Simulation
 
-This project simulates group dynamics and psychological safety using Agent-Based Modeling (ABM), with a focus on team composition, knowledge diversity, and interaction rules.
+## ⭐️ Outline
+This project simulates dynamics of psychological safety using Agent-Based Modeling (ABM), with a focus on individual traits, actions, and interaction.
+By defining agents with individual traits and incorporating their behaviors and team interactions into an Agent-Based Modeling, we dynamically simulate how psychological safety evolves over time.
+Distinctive features of this model are its ability to capture the fluctuations of psychological safety depending on the situation rather than treating it as a simple condition-dependent factor and simplified experimental environmental as an alternative to social experiments, which are often difficult to conduct as preliminary studies. In this way, the model supports the exploration of appropriate team compositions and management interventions.
+
+本研究は，ビジネスアイデア構想におけるアイデア発想フェーズにおいて，個人特性・行動・相互作用が心理的安全性に与えるダイナミクスを再現・分析することを目的とする．
+個人特性を持つエージェントを設定し，行動やチーム内の相互作用を組み込んだABM(Agent-Baased Modeling) を構築することで，心理的安全性が時間とともに変化する過程を動的にシミュレーションする．
+本モデルは，単純な条件依存ではなく，状況に応じて揺らぐ心理的安全性を表現できる点，さらに予備実験が行いづらい社会実験に代わり簡易的な実験環境を提供できる点に特徴がある．
+これにより，適切なチーム編成やマネジメント介入の検討を支援する．
 
 ## 🏁 Project Purpose
+This study aims to reenact and analyze dynamics of psychological safety in the idea generation phase on business ideation, focusing on how individual traits, behaviors, and interactions influenece these dynamics using Agent-Based Modeling
 
-To explore how interpersonal trust, psychological safety, and individual traits affect idea generation and behavior in group work, especially in the context of Carbon Neutrality (CN) brainstorming.
-
----
+ビジネスアイデア構想におけるアイデア発想フェーズにおいて，個人特性・行動・相互作用が心理的安全性に与えるダイナミクスをABMにより再現・分析することを目的とする．
 
 ## 🗂️ Project Structure
 
 ```bash
 abm_project/
-│
-├── config/                  
-│   └── agent_config.py        # Agent initialization: traits, skills, CN knowledge
-│   └── env_config.py          # Global simulation settings: team size, number of rounds
 │
 ├── models/
 │   └── agent_model.py         # Agent class: state, actions, internal variables

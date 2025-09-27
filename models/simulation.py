@@ -109,8 +109,7 @@ def run_inner_loop(agents,t1,logs,max_steps):
                 agents[idx].reaction_probability = update_reaction_probability
                 agents[idx].agree_probability = update_agree_probability
                 agents[idx].attitude_probability = update_attitude_probability
-                
-
+            
                 break
         
         

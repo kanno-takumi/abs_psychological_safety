@@ -1,0 +1,108 @@
+[
+    {
+      "id": 0,
+      "gender": "M",
+      "age": 22,
+      "value_to_cn": { "x_axis": 0.1, "y_axis": -0.3 },
+      "attitude": 0.4,
+      "style": 0.6,
+      "mental_strength": 0.7,
+      "atmosphere": 0.5,
+      "mood": 0.2,
+      "knowledge": {
+        "energy": 0.6,
+        "transport": 0.5,
+        "building": 0.4,
+        "agriculture": 0.7,
+        "waste": 0.3,
+        "system": 0.2
+      },
+      "initial_self_efficacy": 0.8,
+      "initial_opinion_position": 0.1
+    },
+    {
+      "id": 1,
+      "gender": "F",
+      "age": 23,
+      "value_to_cn": { "x_axis": -0.2, "y_axis": 0.3 },
+      "attitude": -0.1,
+      "style": 0.2,
+      "mental_strength": 0.8,
+      "atmosphere": 0.6,
+      "mood": -0.3,
+      "knowledge": {
+        "energy": 0.5,
+        "transport": 0.4,
+        "building": 0.5,
+        "agriculture": 0.6,
+        "waste": 0.4,
+        "system": 0.3
+      },
+      "initial_self_efficacy": 0.7,
+      "initial_opinion_position": -0.2
+    },
+    {
+      "id": 2,
+      "gender": "M",
+      "age": 24,
+      "value_to_cn": { "x_axis": 0.0, "y_axis": 0.0 },
+      "attitude": 0.0,
+      "style": -0.2,
+      "mental_strength": 0.5,
+      "atmosphere": 0.4,
+      "mood": 0.1,
+      "knowledge": {
+        "energy": 0.4,
+        "transport": 0.6,
+        "building": 0.6,
+        "agriculture": 0.5,
+        "waste": 0.2,
+        "system": 0.1
+      },
+      "initial_self_efficacy": 0.6,
+      "initial_opinion_position": 0.0
+    },
+    {
+      "id": 3,
+      "gender": "F",
+      "age": 21,
+      "value_to_cn": { "x_axis": 0.3, "y_axis": -0.4 },
+      "attitude": 0.2,
+      "style": 0.4,
+      "mental_strength": 0.6,
+      "atmosphere": 0.3,
+      "mood": -0.2,
+      "knowledge": {
+        "energy": 0.3,
+        "transport": 0.7,
+        "building": 0.5,
+        "agriculture": 0.4,
+        "waste": 0.6,
+        "system": 0.4
+      },
+      "initial_self_efficacy": 0.75,
+      "initial_opinion_position": 0.2
+    },
+    {
+      "id": 4,
+      "gender": "M",
+      "age": 25,
+      "value_to_cn": { "x_axis": -0.1, "y_axis": 0.2 },
+      "attitude": -0.3,
+      "style": 0.1,
+      "mental_strength": 0.9,
+      "atmosphere": 0.7,
+      "mood": 0.0,
+      "knowledge": {
+        "energy": 0.7,
+        "transport": 0.5,
+        "building": 0.3,
+        "agriculture": 0.6,
+        "waste": 0.4,
+        "system": 0.5
+      },
+      "initial_self_efficacy": 0.85,
+      "initial_opinion_position": -0.1
+    }
+  ]
+  

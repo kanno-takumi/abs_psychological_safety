@@ -1,8 +1,16 @@
 import json
 import os
+from dataclasses import dataclass
+
+def init(agents_folder_: str, agents_file_: str, log_folder_: str):
+    global agents_folder, agents_file, agents_filepath, log_folder, log_filepath
+    agent_folder = agents_folder_
+    agents_file  = agents_file_
+    agents_filepath = os.path.join(agents_folder_, agents_file_)
+    log_folder = log_folder_
+    log_filepath = os.path.join(log_folder_, agents_file_)
 
 def log_step(time1, time2, agents, event_type=None, agent_id=None):
-    filename="result/log.json"
     log_entry = {
         "time1": time1,
         "time2": time2,
@@ -13,7 +21,5 @@ def log_step(time1, time2, agents, event_type=None, agent_id=None):
         } if event_type else None
     }
 
-    os.makedirs(os.path.dirname(filename), exist_ok=True)
-
-    with open(filename, mode='a', encoding='utf-8') as f:
+    with open(log_filepath, mode='a', encoding='utf-8') as f:
         f.write(json.dumps(log_entry, ensure_ascii=False) + "\n")

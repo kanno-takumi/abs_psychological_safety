@@ -1,0 +1,52 @@
+[
+  {
+    "id": 0,
+    "age": 22,
+    "skill": { "domain": 0.6, "groupwork": 0.7, "business": 0.5, "creation": 0.7 },
+    "value_to_cn": { "x_axis": 0.5, "y_axis": 0.4 },
+    "pressure": 0.5,
+    "assertiveness": 0.6,
+    "toughness": 0.6,
+    "extraversion": 0.7
+  },
+  {
+    "id": 1,
+    "age": 23,
+    "skill": { "domain": 0.5, "groupwork": 0.8, "business": 0.6, "creation": 0.6 },
+    "value_to_cn": { "x_axis": 0.6, "y_axis": 0.5 },
+    "pressure": 0.4,
+    "assertiveness": 0.7,
+    "toughness": 0.6,
+    "extraversion": 0.6
+  },
+  {
+    "id": 2,
+    "age": 24,
+    "skill": { "domain": 0.6, "groupwork": 0.7, "business": 0.5, "creation": 0.8 },
+    "value_to_cn": { "x_axis": 0.5, "y_axis": 0.6 },
+    "pressure": 0.6,
+    "assertiveness": 0.6,
+    "toughness": 0.7,
+    "extraversion": 0.6
+  },
+  {
+    "id": 3,
+    "age": 25,
+    "skill": { "domain": 0.7, "groupwork": 0.6, "business": 0.6, "creation": 0.7 },
+    "value_to_cn": { "x_axis": 0.4, "y_axis": 0.5 },
+    "pressure": 0.5,
+    "assertiveness": 0.5,
+    "toughness": 0.6,
+    "extraversion": 0.7
+  },
+  {
+    "id": 4,
+    "age": 26,
+    "skill": { "domain": 0.6, "groupwork": 0.8, "business": 0.5, "creation": 0.7 },
+    "value_to_cn": { "x_axis": 0.6, "y_axis": 0.4 },
+    "pressure": 0.4,
+    "assertiveness": 0.6,
+    "toughness": 0.7,
+    "extraversion": 0.6
+  }
+]

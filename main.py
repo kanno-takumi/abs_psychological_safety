@@ -5,14 +5,13 @@ import numpy as np
 # )
 import pandas as pd
 #main.py や simulate.py で次のようにインポート
-import config.simulation_config as cfg
 import os
 #JSON読み込み
 import json
 import numpy as np
-from models.initializer.agent import Agent
+from models.agent import Agent
 from utils.utils_calc import calc_hierarchies
-from utils.utils_calc import calc_hierarchy
+from utils.utils_calc import calc_hierarchy_mean
 from utils.utils_calc import calc_efficacy
 from utils.utils_calc import calc_risk
 from utils.utils_calc import calc_risk_mean
@@ -30,16 +29,31 @@ from utils.utils_calc import update_efficacy
 from utils.utils_calc import update_risk
 from models.simulation import run_inner_loop
 from models.simulation import run_outer_loop
-# from utils.logger import log_step
+import utils.logger as logger
+import makegraph
 
 
 
 
 #JSON読み込み
-agents_file_data = "newagent.json"
-agents_file_path = os.path.join("data", agents_file_data)
+# 入力を促す
+agents_file = input("エージェントファイル名：")  # 例: 5agents_ver4.json
+agents_folder = "agents_data"
+agents_file_path = os.path.join(agents_folder, agents_file)
+
+log_folder = "simulate_log"
+log_file_path = os.path.join(log_folder,agents_file)
+
+graph_folder = "simulate_graph"
+graph_path_tmp = os.path.join(graph_folder,agents_file)
+name, ext = graph_path_tmp.rsplit(".", 1)
+graph_path = f"{name}.pdf"
+
 with open(agents_file_path, "r") as f:
     agents_data_list = json.load(f)
+    
+#出力パスの設定
+logger.init(agents_folder_=log_folder, agents_file_=agents_file, log_folder_=log_folder)  
 
 #agentsの作成
 agents = []
@@ -50,8 +64,8 @@ for agent_data in agents_data_list:
     
 #agentの中にパラメータとしてhierarchy,hierarchiesという要素を追加
 for agent in agents:
-    agent.hierarchy = calc_hierarchy(0.5,0.5,agent.id,agents)
-    agent.hierarchies = calc_hierarchies(0.5, 0.5, agent.id, agents)
+    agent.hierarchy_mean = calc_hierarchy_mean(0,1,agent.id,agents)
+    agent.hierarchies = calc_hierarchies(0, 1, agent.id, agents)
 
 #t=0の場合、動作確認済。
 for agent in agents:
@@ -77,55 +91,10 @@ for agent in agents:
 
 # logs = []
 run_outer_loop(agents,1000) 
-# speak_dict = {}    
-# for agent in agents:
-#     speak = speak_decision(agent.speak_probability_mean)
-#     speak_dict[agent.id] = speak #agent.idをキーに発言を格納
-#     print(f"Agent{agent.id} ：{speak}")
+ 
+log_entries = makegraph.get_log_entries(log_file_path)
+makegraph.plot_risk(log_entries,graph_path)
+makegraph.plot_psychological_safety(log_entries,graph_path)
+makegraph.plot_hierarchy(log_entries,graph_path)
 
-#agent中身の出力
-# for agent in agents:
-    # print(agent)
-
-# speaker_id = speaker_decision(speak_dict)
-# print(f"speaker：agent{speaker_id}")
-
-# reaction_dict = {}
-# agree_dict = {}
-# attitude_dict = {}
-
-
-# for agent in agents:
-#     agree = agree_to_speaker(agent,speaker_id,0.1)
-#     agree_dict[agent.id] = agree
-#     reaction = reaction_decision(agent,speaker_id,agree)
-#     reaction_dict[agent.id] = reaction
-#     attitude = attitude_result(agent.attitude_probability,speaker_id)
-#     attitude_dict[agent.id] = attitude
-    
-#     print("agent",agent.id,":agree",agree)
-#     print("agent",agent.id,":reaction",reaction)
-#     print("agent",agent.id,"attitude", attitude)
-    
-# reactor_id = reactor_decision(reaction_dict)
-# print(f"reaction_dict:{reaction_dict}")
-# print(f"agree_dict:{agree_dict}")
-
-# print(f"reactor_id：{reactor_id}")
-# reactor_agree = list(agree_dict[reactor_id].values())[0]
-# reactor_attitude = list(attitude_dict[reactor_id].values())[0]
-# print(f"reactor agree: {reactor_agree}")
-# speaker = next(agent for agent in agents if agent.id == speaker_id)
-# reactor = next(agent for agent in agents if agent.id == reactor_id)
-# old_efficacy, updated_efficacy = update_efficacy(speaker,reactor,reactor_agree,0.5,0.5)
-# print(f"old_efficacy:{old_efficacy},new_efficacy:{updated_efficacy}")
-
-# old_risk, updated_risk = update_risk(speaker,reactor,reactor_attitude,0.5,0.5,0.5)
-# print(f"old_risk:{old_risk},updated_risk:{updated_risk}")
-
-# print(run_inner_loop(agents))
-# log,t = 
-
-# print(t)
-# print(log)
-# print(run_outer_loop(agents,1000))
+# print(log_entries[0]["agents"][0])
