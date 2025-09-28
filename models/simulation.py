@@ -6,10 +6,12 @@ from utils.utils_calc import agree_to_speaker
 from utils.utils_calc import reaction_decision
 from utils.utils_calc import attitude_result
 from utils.utils_calc import reactor_decision
-from utils.utils_calc import update_efficacy
+from utils.utils_calc import update_efficacy, calc_efficacy_mean
 from utils.utils_calc import update_risk
 from utils.logger import log_step
 from utils.utils_calc import calc_risk_mean
+from utils.utils_calc import calc_safety
+from utils.utils_calc import calc_safety_mean
 from utils.utils_calc import calc_speak_probability_mean
 from utils.utils_calc import calc_reaction_probability
 from utils.utils_calc import calc_agree_probability
@@ -87,8 +89,11 @@ def run_inner_loop(agents,t1,logs,max_steps):
         reactor_attitude = list(attitude_dict[reactor_id].values())[0]
         #学習
         _,updated_efficacy = update_efficacy(speaker,reactor,reactor_agree,0.5,0.5)
+        update_efficacy_mean = calc_efficacy_mean(updated_efficacy)
         _, updated_risk = update_risk(speaker,reactor,reactor_attitude,1/3,1/3,1/3)
         update_risk_mean = calc_risk_mean(updated_risk)
+        update_safety = calc_safety(updated_risk)
+        update_safety_mean = calc_safety_mean(update_risk_mean)
         update_speak_probability_mean = calc_speak_probability_mean(1,1,1,speaker.assertiveness,speaker.extraversion,update_risk_mean)
         update_reaction_probability = calc_reaction_probability(1,1,1,speaker.id,agents)
         update_agree_probability = calc_agree_probability(speaker.id,agents)
@@ -105,6 +110,8 @@ def run_inner_loop(agents,t1,logs,max_steps):
                 agents[idx].efficacy = updated_efficacy
                 agents[idx].risk = updated_risk
                 agents[idx].risk_mean = update_risk_mean
+                agents[idx].safety = update_safety
+                agents[idx].safety_mean = update_safety_mean
                 agents[idx].speak_probability_mean =update_speak_probability_mean
                 agents[idx].reaction_probability = update_reaction_probability
                 agents[idx].agree_probability = update_agree_probability
@@ -113,7 +120,7 @@ def run_inner_loop(agents,t1,logs,max_steps):
                 break
         
         
-        print("agent",speaker_id,"efficacy", speaker.efficacy )
+        # print("agent",speaker_id,"efficacy", speaker.efficacy )
         
         # 7. 次のspeakerに交代（反応者が次の発言者）
         speaker = reactor

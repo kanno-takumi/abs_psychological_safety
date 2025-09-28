@@ -86,6 +86,10 @@ def calc_efficacy(hierarchies):
     #     # efficacy = w1 * efficacy + w2 * reaction * (1 - agree)
     return efficacy
     
+def calc_efficacy_mean(efficacy):
+    efficacy_mean = np.mean(list(efficacy.values()))
+    return efficacy_mean
+    
     #初期値
 def calc_risk(efficacy, toughness, pressure, t):
     #行列で用意。
@@ -95,9 +99,17 @@ def calc_risk(efficacy, toughness, pressure, t):
     #     print("t>0")
     return risk
 
+
 def calc_risk_mean(risk):
     risk_mean = np.mean(list(risk.values()))
     return risk_mean
+
+def calc_safety(risk):
+    safety = {key: (1 - risk[key]) for key in risk}
+    return safety
+
+def calc_safety_mean(risk_mean):
+    return 1-risk_mean    
 
 def calc_speak_probability_mean(w1,w2,w3,assertiveness,extraversion,risk_mean):
     speak_probability = (w1 * assertiveness + w2 * extraversion + w3 * (1 - risk_mean)) / (w1+ w2 + w3)

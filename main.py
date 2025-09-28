@@ -1,100 +1,84 @@
 # ABS/main.py
+import os, re, json
 import numpy as np
-# from models.metrics.behavior_tendency_calculator import (
-#     speak_probability_calculator, reaction_strength_calculator, expressed_attitude_calculator
-# )
 import pandas as pd
-#main.py や simulate.py で次のようにインポート
-import os
-#JSON読み込み
-import json
-import numpy as np
+
 from models.agent import Agent
-from utils.utils_calc import calc_hierarchies
-from utils.utils_calc import calc_hierarchy_mean
-from utils.utils_calc import calc_efficacy
-from utils.utils_calc import calc_risk
-from utils.utils_calc import calc_risk_mean
-from utils.utils_calc import calc_speak_probability_mean
-from utils.utils_calc import calc_reaction_probability
-from utils.utils_calc import calc_agree_probability
-from utils.utils_calc import calc_attitude_probability
-from utils.utils_calc import speak_decision
-from utils.utils_calc import speaker_decision
-from utils.utils_calc import agree_to_speaker
-from utils.utils_calc import reaction_decision
-from utils.utils_calc import attitude_result
-from utils.utils_calc import reactor_decision
-from utils.utils_calc import update_efficacy
-from utils.utils_calc import update_risk
-from models.simulation import run_inner_loop
+from utils.utils_calc import (
+    calc_hierarchies, calc_hierarchy_mean, calc_efficacy, calc_efficacy_mean,
+    calc_risk, calc_risk_mean, calc_safety, calc_safety_mean, calc_speak_probability_mean,
+    calc_reaction_probability, calc_agree_probability, calc_attitude_probability,
+    speak_decision, speaker_decision, agree_to_speaker,
+    reaction_decision, attitude_result, reactor_decision,
+    update_efficacy, update_risk
+)
 from models.simulation import run_outer_loop
 import utils.logger as logger
-import makegraph
+import make_graphs
 
 
+# ----------------------------
+# 入力
+# ----------------------------
+agents_file = input("エージェントファイル名：")  # 例: newagent.json
 
+AGENTS_DIR  = "agents"
+LOGS_ROOT   = "logs"
+GRAPHS_ROOT = "graphs"
+os.makedirs(AGENTS_DIR, exist_ok=True)
+os.makedirs(LOGS_ROOT, exist_ok=True)
+os.makedirs(GRAPHS_ROOT, exist_ok=True)
 
-#JSON読み込み
-# 入力を促す
-agents_file = input("エージェントファイル名：")  # 例: 5agents_ver4.json
-agents_folder = "agents_data"
-agents_file_path = os.path.join(agents_folder, agents_file)
-
-log_folder = "simulate_log"
-log_file_path = os.path.join(log_folder,agents_file)
-
-graph_folder = "simulate_graph"
-graph_path_tmp = os.path.join(graph_folder,agents_file)
-name, ext = graph_path_tmp.rsplit(".", 1)
-graph_path = f"{name}.pdf"
-
-with open(agents_file_path, "r") as f:
+# ----------------------------
+# エージェント読込と初期化
+# ----------------------------
+agents_file_path = os.path.join(AGENTS_DIR, agents_file)
+with open(agents_file_path, "r", encoding="utf-8") as f:
     agents_data_list = json.load(f)
-    
-#出力パスの設定
-logger.init(agents_folder_=log_folder, agents_file_=agents_file, log_folder_=log_folder)  
 
-#agentsの作成
-agents = []
-N = len(agents_data_list)  # 人数に応じて自動設定
-for agent_data in agents_data_list:
-    agent = Agent(agent_data, agents)  #Agentクラスはdata(dict), num(人数)を受け取れるように
-    agents.append(agent)
-    
-#agentの中にパラメータとしてhierarchy,hierarchiesという要素を追加
+agents = [Agent(data, []) for data in agents_data_list]
 for agent in agents:
-    agent.hierarchy_mean = calc_hierarchy_mean(0,1,agent.id,agents)
-    agent.hierarchies = calc_hierarchies(0, 1, agent.id, agents)
-
-#t=0の場合、動作確認済。
-for agent in agents:
-    agent.efficacy = calc_efficacy(agent.hierarchies)
-# print("calc_efficacy:",calc_efficacy(0.5,0.5,agents[0].hierarchies,{},{},{},t=0))
-
-#agentの中にパラメータとしてriskという要素を追加
-for agent in agents:
-    agent.risk = calc_risk(agent.efficacy,agent.toughness,{},t=0)
-    agent.risk_mean = calc_risk_mean(agent.risk)
-
-"""
-ここまでは初期値。
-ここからはループを使う？はず。
-まずはループなしで動くか試す。
-"""
-
-for agent in agents:
+    agent.hierarchy_mean = calc_hierarchy_mean(0, 1, agent.id, agents)
+    agent.hierarchies    = calc_hierarchies(0, 1, agent.id, agents)
+    agent.efficacy       = calc_efficacy(agent.hierarchies)
+    agent.efficacy_mean  = calc_efficacy_mean(agent.efficacy)
+    agent.risk           = calc_risk(agent.efficacy, agent.toughness, {}, t=0)
+    agent.risk_mean      = calc_risk_mean(agent.risk)
+     # safety = 1 - risk
+    agent.safety    = calc_safety(agent.risk)
+    agent.safety_mean = calc_safety_mean(agent.risk_mean)  
     agent.speak_probability_mean = calc_speak_probability_mean(1,1,1,agent.assertiveness,agent.extraversion,agent.risk_mean)
-    agent.reaction_probability = calc_reaction_probability(1,1,1,agent.id,agents)
-    agent.agree_probability = calc_agree_probability(agent.id,agents)
-    agent.attitude_probability = calc_attitude_probability(1,1,agent.id,agents)
+    agent.reaction_probability   = calc_reaction_probability(1,1,1,agent.id,agents)
+    agent.agree_probability      = calc_agree_probability(agent.id,agents)
+    agent.attitude_probability   = calc_attitude_probability(1,1,agent.id,agents)
 
-# logs = []
-run_outer_loop(agents,1000) 
- 
-log_entries = makegraph.get_log_entries(log_file_path)
-makegraph.plot_risk(log_entries,graph_path)
-makegraph.plot_psychological_safety(log_entries,graph_path)
-makegraph.plot_hierarchy(log_entries,graph_path)
+# ----------------------------
+# ロガー初期化 → シミュレーション実行（逐次 .jsonl に出力）
+# ----------------------------
+logger.init(agents_folder_='agents', agents_file_=agents_file, log_folder_='logs')
+run_outer_loop(agents, 1000)  # run_outer_loop 内で utils.logger.log_step が呼ばれます
 
-# print(log_entries[0]["agents"][0])
+# ----------------------------
+# ログパス取得（.jsonl）→ グラフJSONを書き出し
+# ----------------------------
+log_path = logger.log_filepath  # 例: logs/newagent/newagent_1.jsonl
+
+# agent_id / run_id を抽出して graphs/<agent>/<agent>_<n>_*.json を作る
+agent_dir = os.path.basename(os.path.dirname(log_path))          # newagent
+file_base = os.path.splitext(os.path.basename(log_path))[0]      # newagent_1
+m = re.match(rf"^{re.escape(agent_dir)}_(\d+)$", file_base)
+run_id = int(m.group(1)) if m else 1
+
+graph_dir = os.path.join(GRAPHS_ROOT, agent_dir)
+os.makedirs(graph_dir, exist_ok=True)
+graph_base_path = os.path.join(graph_dir, f"{agent_dir}_{run_id}")
+
+# JSONL を読み込んでメトリクスを書き出し
+# entries = make_graphs.load_jsonl(log_path)
+# make_graphs.write_risk_mean_json(entries,         f"{graph_base_path}_risk_mean.json")
+# make_graphs.write_safety_mean_json(entries, f"{graph_base_path}_psychological_safety_mean.json")
+# make_graphs.write_efficacy_json(entries,     f"{graph_base_path}_efficacy.json")
+# make_graphs.write_hierarchy_mean_json(entries,  f"{graph_base_path}_hierarchy_mean.json")
+
+make_graphs.plot_params_self(f"{agent_dir}_{run_id}.jsonl")
+make_graphs.plot_params_others(f"{agent_dir}_{run_id}.jsonl")
