@@ -38,8 +38,8 @@ with open(agents_file_path, "r", encoding="utf-8") as f:
 
 agents = [Agent(data, []) for data in agents_data_list]
 for agent in agents:
-    agent.hierarchy_mean = calc_hierarchy_mean(0, 1, agent.id, agents)
     agent.hierarchies    = calc_hierarchies(0, 1, agent.id, agents)
+    agent.hierarchy_mean = calc_hierarchy_mean(agent.hierarchies)
     agent.efficacy       = calc_efficacy(agent.hierarchies)
     agent.efficacy_mean  = calc_efficacy_mean(agent.efficacy)
     agent.risk           = calc_risk(agent.efficacy, agent.toughness, {}, t=0)

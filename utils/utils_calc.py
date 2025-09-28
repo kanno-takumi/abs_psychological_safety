@@ -3,36 +3,6 @@ import random
 import math
 
 
-def calc_hierarchy_mean(w1, w2, agent_id, agents):
-    agent_i = next(agent for agent in agents if agent.id == agent_id)
-
-    age_list = [agent.age for agent in agents]
-    skill_score_list = [agent.skill_score for agent in agents]
-
-    skill_range = max(skill_score_list) - min(skill_score_list)
-    age_range   = max(age_list) - min(age_list)
-
-    skill_score_mean = np.mean(skill_score_list)
-    age_score_mean   = np.mean(age_list)
-
-    # レンジ0ガード
-    agent_i_skill_level = 0.0 if skill_range == 0 else (agent_i.skill_score - skill_score_mean) / skill_range
-    agent_i_age_level   = 0.0 if age_range   == 0 else (agent_i.age         - age_score_mean)   / age_range
-
-    # 重みをL1正規化（|w1|+|w2|=1 になるように）
-    w_norm = abs(w1) + abs(w2)
-    if w_norm == 0:
-        w1n, w2n = 0.5, 0.5
-    else:
-        w1n, w2n = w1 / w_norm, w2 / w_norm
-
-    hierarchy = w1n * agent_i_skill_level + w2n * agent_i_age_level
-
-    # [-1,1] を [0,1] に射影 & 念のためclip
-    hierarchy_norm = (hierarchy + 1) / 2
-    hierarchy_norm = float(np.clip(hierarchy_norm, 0.0, 1.0))
-    return hierarchy_norm
-
 #to j に向けたヒエラルキー
 def calc_hierarchies(w1, w2, agent_id, agents):
     """
@@ -46,15 +16,15 @@ def calc_hierarchies(w1, w2, agent_id, agents):
     agent_i = next(agent for agent in agents if agent.id == agent_id)
 
     skill_score_list = [agent.skill_score for agent in agents]
-    age_list = [agent.age for agent in agents]
+    # age_list = [agent.age for agent in agents]
     # print("skill_score_list")
     # print(skill_score_list)
     skill_range = max(skill_score_list) - min(skill_score_list)
-    age_range = max(age_list) - min(age_list)
+    # age_range = max(age_list) - min(age_list)
     
     #分母が0になるのを防ぐ。
     skill_range = skill_range if skill_range != 0 else 1e-6
-    age_range = age_range if age_range != 0 else 1e-6
+    # age_range = age_range if age_range != 0 else 1e-6
     
     hierarchies = {}
     
@@ -69,11 +39,18 @@ def calc_hierarchies(w1, w2, agent_id, agents):
         #平均で割らない
         delta_skill = (agent_i.skill_score - agent_j.skill_score)
         # print(delta_skill)
-        delta_age = (agent_i.age - agent_j.age) / age_range
-        hierarchy = (w1 * delta_skill + w2 * delta_age) / (w1 + w2)    
+        # delta_age = (agent_i.age - agent_j.age) / age_range
+        # hierarchy = (w1 * delta_skill + w2 * delta_age) / (w1 + w2)    
+        hierarchy = delta_skill    
         hierarchy_norm = (hierarchy + 1) / 2
         hierarchies[agent_j.id] = hierarchy_norm    
     return hierarchies
+
+
+def calc_hierarchy_mean(hierarchies):
+    hierarchy_mean = np.mean(list(hierarchies.values()))
+    return hierarchy_mean
+    
 
 def calc_efficacy(hierarchies):
     # print("hierarchies",hierarchies)
@@ -125,7 +102,7 @@ def calc_reaction_probability(w1,w2,w3,agent_id,agents):
         if agent_id == agent_j.id:
             continue
         risk_ij = agent_i.risk.get(agent_j.id)
-        reaction_probability =(w1 * assertiveness + w2 * extraversion + w3 * risk_ij)/(w1 + w2 + w3)
+        reaction_probability =(w1 * assertiveness + w2 * extraversion + w3 * (1 - risk_ij))/(w1 + w2 + w3)
         reaction_probabilities[agent_j.id] = reaction_probability
     return reaction_probabilities
 
@@ -149,8 +126,9 @@ def calc_attitude_probability(w1,w2,agent_id,agents):
     for agent_j in agents:
         if agent_id == agent_j.id:
             continue
-        risk_ij = agent_i.risk.get(agent_j.id)
-        attitude_probability = (w1 * agent_i.pressure + w2 * risk_ij) / (w1+w2)
+        safety_ij = agent_i.safety.get(agent_j.id)
+        #attitude_probabilityが高ければ態度が良いということ。
+        attitude_probability = (w1 * agent_i.pressure + w2 * safety_ij) / (w1+w2)
         attitude_probabilities[agent_j.id] = attitude_probability
             
     return attitude_probabilities
@@ -270,7 +248,7 @@ def update_efficacy(speaker, reactor, agree, alpha1, alpha2):
 
     reaction = 1  # この関数が呼ばれた時点でreactorは反応済と仮定
     old_value = updated_efficacy.get(reactor.id)
-    new_value = alpha1 * old_value + alpha2 * reaction * (1 - agree)
+    new_value = alpha1 * old_value + alpha2 * reaction * agree
 
     updated_efficacy[reactor.id] = new_value
     # print("newvalue",new_value)
@@ -289,9 +267,11 @@ def update_risk(speaker, reactor, attitude, alpha1, alpha2, alpha3):
     
     reaction = 1
     old_value = updated_risk.get(reactor.id)
-    new_value = alpha1 * old_value + alpha2 * attitude + alpha3 * (1 - efficacy[reactor.id])
+    #attitudeは高い方が態度が良いという意味のため、逆転させる
     
+    #speakerのefficacyなんだけど、reactorのefficacyとしてreactor.idを示している
+    new_value = alpha1 * old_value + alpha2 * (1 - attitude) + alpha3 * (1 - efficacy[reactor.id])
     
-    
+    #ここも、speakerのriskだけど、reactorに対してのriskとしてreactor.idを示している
     updated_risk[reactor.id] = new_value
     return old_risk, updated_risk

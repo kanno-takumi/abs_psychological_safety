@@ -9,7 +9,7 @@ class Agent:
      # #staticで初期値はメンバー依存
     # #Nの配列[id, gender, age...]
         self.id = data["id"]
-        self.age = data["age"]
+        # self.age = data["age"]
         self.skill = data["skill"] #この中にさらに4つある
         self.skill_score = np.mean(list(self.skill.values()))
         self.value_to_cn = data["value_to_cn"]
