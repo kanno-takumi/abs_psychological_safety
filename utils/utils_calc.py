@@ -15,15 +15,15 @@ def calc_hierarchies(w1, w2, agent_id, agents):
     # agent_id に対応するエージェントを探す
     agent_i = next(agent for agent in agents if agent.id == agent_id)
 
-    skill_score_list = [agent.skill_score for agent in agents]
+    # skill_score_list = [agent.skill_score for agent in agents]
     # age_list = [agent.age for agent in agents]
     # print("skill_score_list")
     # print(skill_score_list)
-    skill_range = max(skill_score_list) - min(skill_score_list)
+    # skill_range = max(skill_score_list) - min(skill_score_list)
     # age_range = max(age_list) - min(age_list)
     
     #分母が0になるのを防ぐ。
-    skill_range = skill_range if skill_range != 0 else 1e-6
+    # skill_range = skill_range if skill_range != 0 else 1e-6
     # age_range = age_range if age_range != 0 else 1e-6
     
     hierarchies = {}
@@ -128,7 +128,7 @@ def calc_attitude_probability(w1,w2,agent_id,agents):
             continue
         safety_ij = agent_i.safety.get(agent_j.id)
         #attitude_probabilityが高ければ態度が良いということ。
-        attitude_probability = (w1 * agent_i.pressure + w2 * safety_ij) / (w1+w2)
+        attitude_probability = agent_i.pressure * safety_ij
         attitude_probabilities[agent_j.id] = attitude_probability
             
     return attitude_probabilities
@@ -158,17 +158,11 @@ def speak_decision(speak_probability_mean, sigma=0.1,temperature=0.1):
     """
     # 正規分布から一時的な確率値を生成し、0〜1にクリップ
     sampled = random.normalvariate(speak_probability_mean, sigma)
-    clipped = max(0.0, min(1.0, sampled))
-    
-    # 確率を滑らかに二値化（ロジスティック関数を通す）
-    # 0.5 を中心に温度パラメータで鋭さを調整
-    logit = (clipped - 0.5) / temperature
-    prob = 1 / (1 + math.exp(-logit))
+    prob = max(0.0, min(1.0, sampled))
     
     # その確率に基づいて発言するかどうかを決定
     return 1 if random.random() < prob else 0
 
-        
 def speaker_decision(speaks_dict):
     candidates = [agent_id for agent_id, speak in speaks_dict.items() if speak ==1]
     
@@ -176,7 +170,6 @@ def speaker_decision(speaks_dict):
         return random.choice(candidates)
     else:
         return None
-    
     
 def agree_to_speaker(agent,speaker_id,sigma=0.1):
     #agent_id == speaker_id の時はagent_prob = 0を返す

@@ -171,7 +171,7 @@ def plot_params_self(file_name):
         ax = pivot.plot(figsize=(10,6), ylim=(0,1), grid=True, legend=True)
         ax.set_xlabel("Time Step (t1)")
         ax.set_ylabel(param)
-        ax.set_title(param)
+        # ax.set_title(param)
         out_path = build_graph_path(os.path.basename(file_name), param)  # あなたの関数を使用
         plt.tight_layout()
         plt.savefig(out_path)
@@ -240,6 +240,7 @@ def plot_params_others(file_name):
             plt.ylabel(param)
             plt.legend()
             plt.grid(True)
+            plt.ylim(0, 1)
             plt.tight_layout()
 
             out_path = build_graph_path(os.path.basename(file_name), f"{param}_i{i_val}")
