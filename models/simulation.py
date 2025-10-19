@@ -87,7 +87,8 @@ def run_inner_loop(agents,t1,logs,max_steps):
         reactor = next(agent for agent in agents if agent.id == reactor_id)
         reactor_agree = list(agree_dict[reactor_id].values())[0]
         reactor_attitude = list(attitude_dict[reactor_id].values())[0]
-        #学習
+        
+        #発言 / リアクションに対する変化 = 学習
         _,updated_efficacy = update_efficacy(speaker,reactor,reactor_agree,0.5,0.5)
         update_efficacy_mean = calc_efficacy_mean(updated_efficacy)
         _, updated_risk = update_risk(speaker,reactor,reactor_attitude,1/3,1/3,1/3)
