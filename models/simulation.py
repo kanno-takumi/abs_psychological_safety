@@ -88,38 +88,74 @@ def run_inner_loop(agents,t1,logs,max_steps):
         reactor_agree = list(agree_dict[reactor_id].values())[0] #実際のreactorがspeakerに対してどれだけagreeしていたかの値
         reactor_attitude = list(attitude_dict[reactor_id].values())[0]#実際のreactorがspeakerに対してどんなattitudeを持っているかの値
         
+        #ログを記録させる（agent学習前にログを記録）
+        log_step(t1,t2,agents,"React",reactor_id)
+        t1 += 1
+        t2 += 1 
+        
         #発言 / リアクションに対する変化 = 学習
         _,updated_efficacy = update_efficacy(speaker,reactor,reactor_agree,0.5,0.5) #言動によりダイレクトに更新される場所
         update_efficacy_mean = calc_efficacy_mean(updated_efficacy)
+        for idx, agent in enumerate(agents):
+            if agent.id == speaker_id:
+                agents[idx].efficacy = updated_efficacy
+                agents[idx].efficacy_mean = update_efficacy_mean
+                speaker = agents[idx]  # ローカル参照も最新に
+                break
+        
         _, updated_risk = update_risk(speaker,reactor,reactor_attitude,1/3,1/3,1/3) #言動によりダイレクトに更新される場所
         update_risk_mean = calc_risk_mean(updated_risk)
+        for idx, agent in enumerate(agents):
+            if agent.id == speaker_id:
+                agents[idx].risk = updated_risk
+                agents[idx].risk_mean = update_risk_mean
+                speaker = agents[idx]
+                break
+            
         update_safety = calc_safety(updated_risk)
         update_safety_mean = calc_safety_mean(update_risk_mean)
+        for idx, agent in enumerate(agents):
+            if agent.id == speaker_id:
+                agents[idx].safety = update_safety
+                agents[idx].safety_mean = update_safety_mean
+                speaker = agents[idx]
+                break
+        
         update_speak_probability_mean = calc_speak_probability_mean(1,1,1,speaker.assertiveness,speaker.extraversion,update_risk_mean)
         update_reaction_probability = calc_reaction_probability(1,1,1,speaker.id,agents)
         update_agree_probability = calc_agree_probability(speaker.id,agents)
         update_attitude_probability = calc_attitude_probability(1,1,speaker.id,agents)
+        
+        # agentsリストに反映
+        for idx, agent in enumerate(agents):
+            if agent.id == speaker_id:
+                agents[idx].speak_probability_mean = update_speak_probability_mean
+                agents[idx].reaction_probability   = update_reaction_probability
+                agents[idx].agree_probability      = update_agree_probability
+                agents[idx].attitude_probability   = update_attitude_probability
+                speaker = agents[idx]  # ローカル変数speakerも最新状態に
+                break
         
         #speakerのパラメータを更新している（agentとは区別される）    
         # speaker.efficacy = updated_efficacy
         # speaker.risk = updated_risk
         # speaker.risk_mean = update_risk_mean
         
-        # agentsリスト内にも反映
-        for idx, agent in enumerate(agents):
-            if agent.id == speaker_id:
-                agents[idx].efficacy = updated_efficacy
-                agents[idx].efficacy_mean = update_efficacy_mean
-                agents[idx].risk = updated_risk
-                agents[idx].risk_mean = update_risk_mean
-                agents[idx].safety = update_safety
-                agents[idx].safety_mean = update_safety_mean
-                agents[idx].speak_probability_mean =update_speak_probability_mean
-                agents[idx].reaction_probability = update_reaction_probability
-                agents[idx].agree_probability = update_agree_probability
-                agents[idx].attitude_probability = update_attitude_probability
+        # agentsリスト内にも反映 常に更新するスタイルに変更
+        # for idx, agent in enumerate(agents):
+        #     if agent.id == speaker_id:
+        #         agents[idx].efficacy = updated_efficacy
+        #         agents[idx].efficacy_mean = update_efficacy_mean
+        #         agents[idx].risk = updated_risk
+        #         agents[idx].risk_mean = update_risk_mean
+        #         agents[idx].safety = update_safety
+        #         agents[idx].safety_mean = update_safety_mean
+        #         agents[idx].speak_probability_mean =update_speak_probability_mean
+        #         agents[idx].reaction_probability = update_reaction_probability
+        #         agents[idx].agree_probability = update_agree_probability
+        #         agents[idx].attitude_probability = update_attitude_probability
             
-                break
+        #         break
         
         
         # print("agent",speaker_id,"efficacy", speaker.efficacy )
@@ -127,9 +163,3 @@ def run_inner_loop(agents,t1,logs,max_steps):
         # 7. 次のspeakerに交代（反応者が次の発言者）
         speaker = reactor
         speaker_id = reactor.id
-        log_step(t1,t2,agents,"React",reactor_id)
-        t1 += 1
-        t2 += 1 
-    
-    # return logs
-
