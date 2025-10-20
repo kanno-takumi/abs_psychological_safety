@@ -66,11 +66,11 @@ def run_inner_loop(agents,t1,logs,max_steps):
         agree_dict = {}
         attitude_dict = {}
         for agent in agents:
-            agree = agree_to_speaker(agent,speaker_id,0.1)
+            agree = agree_to_speaker(agent,speaker_id,0.2) #あるエージェントがスピーカーにどれだけ同意するか
             agree_dict[agent.id] = agree
-            reaction = reaction_decision(agent,speaker_id,agree)
-            reaction_dict[agent.id] = reaction
-            attitude = attitude_result(agent.attitude_probability,speaker_id)
+            reaction = reaction_decision(agent,speaker_id,agree) #あるエージェントがスピーカーにリアクションを行うかどうか
+            reaction_dict[agent.id] = reaction 
+            attitude = attitude_result(agent.attitude_probability,speaker_id) #あるエージェントがスピーカーに持つ態度の大きさ
             attitude_dict[agent.id] = attitude
             
     
@@ -79,19 +79,19 @@ def run_inner_loop(agents,t1,logs,max_steps):
             # print("agent",agent.id,"attitude", attitude)
             
         
-        reactor_id = reactor_decision(reaction_dict)
+        reactor_id = reactor_decision(reaction_dict) #実際のリアクターをランダムで決定
         
-        if reactor_id is None:
+        if reactor_id is None: #リアクターがいない場合終了
             return t1#（Noneの時は+1しない。reactしないけどspeakする可能性があるから。）
         
         reactor = next(agent for agent in agents if agent.id == reactor_id)
-        reactor_agree = list(agree_dict[reactor_id].values())[0]
-        reactor_attitude = list(attitude_dict[reactor_id].values())[0]
+        reactor_agree = list(agree_dict[reactor_id].values())[0] #実際のreactorがspeakerに対してどれだけagreeしていたかの値
+        reactor_attitude = list(attitude_dict[reactor_id].values())[0]#実際のreactorがspeakerに対してどんなattitudeを持っているかの値
         
         #発言 / リアクションに対する変化 = 学習
-        _,updated_efficacy = update_efficacy(speaker,reactor,reactor_agree,0.5,0.5)
+        _,updated_efficacy = update_efficacy(speaker,reactor,reactor_agree,0.5,0.5) #言動によりダイレクトに更新される場所
         update_efficacy_mean = calc_efficacy_mean(updated_efficacy)
-        _, updated_risk = update_risk(speaker,reactor,reactor_attitude,1/3,1/3,1/3)
+        _, updated_risk = update_risk(speaker,reactor,reactor_attitude,1/3,1/3,1/3) #言動によりダイレクトに更新される場所
         update_risk_mean = calc_risk_mean(updated_risk)
         update_safety = calc_safety(updated_risk)
         update_safety_mean = calc_safety_mean(update_risk_mean)
@@ -109,6 +109,7 @@ def run_inner_loop(agents,t1,logs,max_steps):
         for idx, agent in enumerate(agents):
             if agent.id == speaker_id:
                 agents[idx].efficacy = updated_efficacy
+                agents[idx].efficacy_mean = update_efficacy_mean
                 agents[idx].risk = updated_risk
                 agents[idx].risk_mean = update_risk_mean
                 agents[idx].safety = update_safety

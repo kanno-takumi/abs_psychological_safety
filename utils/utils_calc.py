@@ -171,7 +171,7 @@ def speaker_decision(speaks_dict):
     else:
         return None
     
-def agree_to_speaker(agent,speaker_id,sigma=0.1):
+def agree_to_speaker(agent,speaker_id,sigma=0.2):
     #agent_id == speaker_id の時はagent_prob = 0を返す
     # print(agent.id)
     # print(speaker_id)
@@ -221,7 +221,8 @@ def attitude_result(attitude_probability, to_id):
     attitude = attitude_probability.get(to_id, None)#基本的にはattitude_probabilityのto_id番目を取得。なければ0
     return {to_id:attitude}
 
-##efficacy
+#学習モデル
+##efficacy #言動によりダイレクトに更新される場所
 def update_efficacy(speaker, reactor, agree, alpha1, alpha2):
     """
     speakerからreactorに対するefficacyのみを更新し、全体のefficacy辞書を返す。
@@ -240,15 +241,14 @@ def update_efficacy(speaker, reactor, agree, alpha1, alpha2):
     updated_efficacy = speaker.efficacy.copy()
 
     reaction = 1  # この関数が呼ばれた時点でreactorは反応済と仮定
-    old_value = updated_efficacy.get(reactor.id)
-    new_value = alpha1 * old_value + alpha2 * reaction * agree
+    old_value = updated_efficacy.get(reactor.id)#リアクターに対する過去のefficacyを取得
+    new_value = alpha1 * old_value + alpha2 * reaction * agree #賛成度合いが高い場合、リアクターへのefficacyが高くなる
 
     updated_efficacy[reactor.id] = new_value
     # print("newvalue",new_value)
     return old_efficacy,updated_efficacy
 
-#学習モデル
-##risk
+##risk #言動によりダイレクトに更新される場所
 def update_risk(speaker, reactor, attitude, alpha1, alpha2, alpha3):
     """
     agent_i が持つ他者に対する risk_ijを更新。
@@ -263,7 +263,7 @@ def update_risk(speaker, reactor, attitude, alpha1, alpha2, alpha3):
     #attitudeは高い方が態度が良いという意味のため、逆転させる
     
     #speakerのefficacyなんだけど、reactorのefficacyとしてreactor.idを示している
-    new_value = alpha1 * old_value + alpha2 * (1 - attitude) + alpha3 * (1 - efficacy[reactor.id])
+    new_value = alpha1 * old_value + alpha2 * attitude + alpha3 * (1 - efficacy[reactor.id])
     
     #ここも、speakerのriskだけど、reactorに対してのriskとしてreactor.idを示している
     updated_risk[reactor.id] = new_value
