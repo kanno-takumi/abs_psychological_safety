@@ -15,6 +15,8 @@ from utils.utils_calc import (
 from models.simulation import run_outer_loop
 import utils.logger as logger
 import make_graphs
+import make_event_tree
+import make_event_log
 
 
 # ----------------------------
@@ -47,7 +49,7 @@ for agent in agents:
      # safety = 1 - risk
     agent.safety    = calc_safety(agent.risk)
     agent.safety_mean = calc_safety_mean(agent.risk_mean)  
-    agent.speak_probability_mean = calc_speak_probability_mean(1,1,1,agent.assertiveness,agent.extraversion,agent.risk_mean)
+    agent.speak_probability_mean = calc_speak_probability_mean(1,1,1,agent.assertiveness,agent.extraversion,agent.safety_mean)
     agent.reaction_probability   = calc_reaction_probability(1,1,1,agent.id,agents)
     agent.agree_probability      = calc_agree_probability(agent.id,agents)
     agent.attitude_probability   = calc_attitude_probability(1,1,agent.id,agents)
@@ -56,7 +58,7 @@ for agent in agents:
 # ロガー初期化 → シミュレーション実行（逐次 .jsonl に出力）
 # ----------------------------
 logger.init(agents_folder_='agents', agents_file_=agents_file, log_folder_='logs')
-run_outer_loop(agents, 1000)  # run_outer_loop 内で utils.logger.log_step が呼ばれます
+run_outer_loop(agents, 120)  # run_outer_loop 内で utils.logger.log_step が呼ばれます
 
 # ----------------------------
 # ログパス取得（.jsonl）→ グラフJSONを書き出し
@@ -82,3 +84,5 @@ graph_base_path = os.path.join(graph_dir, f"{agent_dir}_{run_id}")
 
 make_graphs.plot_params_self(f"{agent_dir}_{run_id}.jsonl")
 make_graphs.plot_params_others(f"{agent_dir}_{run_id}.jsonl")
+make_event_tree.generate_event_tree(f"{agent_dir}_{run_id}.jsonl")
+make_event_log.export_event_json_from_log(f"{agent_dir}_{run_id}.jsonl")

@@ -88,21 +88,21 @@ def calc_safety(risk):
 def calc_safety_mean(risk_mean):
     return 1-risk_mean    
 
-def calc_speak_probability_mean(w1,w2,w3,assertiveness,extraversion,risk_mean):
-    speak_probability = (w1 * assertiveness + w2 * extraversion + w3 * (1 - risk_mean)) / (w1+ w2 + w3)
+def calc_speak_probability_mean(w1,w2,w3,assertiveness,extraversion,safety_mean):
+    speak_probability = (w1 * assertiveness + w2 * extraversion + w3 * safety_mean) / (w1+ w2 + w3)
     return speak_probability
 
 def calc_reaction_probability(w1,w2,w3,agent_id,agents):
     agent_i = next(agent for agent in agents if agent.id == agent_id)
     assertiveness = agent_i.assertiveness
     extraversion = agent_i.extraversion
-    risk = agent_i.risk
+    safety = agent_i.risk
     reaction_probabilities = {}
     for agent_j in agents:
         if agent_id == agent_j.id:
             continue
-        risk_ij = agent_i.risk.get(agent_j.id)
-        reaction_probability =(w1 * assertiveness + w2 * extraversion + w3 * (1 - risk_ij))/(w1 + w2 + w3)
+        safety_ij = agent_i.safety.get(agent_j.id)
+        reaction_probability =(w1 * assertiveness + w2 * extraversion + w3 * safety_ij)/(w1 + w2 + w3)
         reaction_probabilities[agent_j.id] = reaction_probability
     return reaction_probabilities
 
@@ -128,7 +128,9 @@ def calc_attitude_probability(w1,w2,agent_id,agents):
             continue
         safety_ij = agent_i.safety.get(agent_j.id)
         #attitude_probabilityが高ければ態度が良いということ。
-        attitude_probability = agent_i.pressure * safety_ij
+        # tau =0.5 #温度付き
+        # attitude_probability = (agent_i.pressure * safety_ij) ** tau
+        attitude_probability = (w1 * agent_i.pressure + w2 * safety_ij)/(w1+w2)
         attitude_probabilities[agent_j.id] = attitude_probability
             
     return attitude_probabilities
@@ -171,7 +173,7 @@ def speaker_decision(speaks_dict):
     else:
         return None
     
-def agree_to_speaker(agent,speaker_id,sigma=0.2):
+def agree_to_speaker(agent,speaker_id,sigma=0.1):
     #agent_id == speaker_id の時はagent_prob = 0を返す
     # print(agent.id)
     # print(speaker_id)
@@ -199,7 +201,7 @@ def reaction_decision(agent_i, speaker_id, agree_to_speaker, alpha1=0.5, alpha2=
         return {speaker_id: None}  # 自分自身にはリアクションしない
 
     reaction_prob = agent_i.reaction_probability.get(key, 0.5)
-    agree_deviation = abs(0.5 - agree_to_speaker[speaker_id])
+    agree_deviation = abs(0.5 - agree_to_speaker[speaker_id]) * 2
     combined_prob = (alpha1 * reaction_prob + alpha2 * agree_deviation) / (alpha1 + alpha2)
 
     reaction = 1 if random.random() < combined_prob else 0
@@ -217,9 +219,13 @@ def reactor_decision(reaction_dict):
         return None
     
 
-def attitude_result(attitude_probability, to_id):
-    attitude = attitude_probability.get(to_id, None)#基本的にはattitude_probabilityのto_id番目を取得。なければ0
-    return {to_id:attitude}
+def attitude_result(agent,speaker_id,w1, w2, attitude_probability, agreement):
+    if agent.id == speaker_id:
+        return {agent.id: None}
+    attitude_probability_id = attitude_probability.get(speaker_id, None)#基本的にはattitude_probabilityのto_id番目を取得。なければ0
+    attitude = (w1 * attitude_probability_id + w2 * (1 - agreement)) /  (w1 + w2)
+    
+    return {speaker_id:attitude}
 
 #学習モデル
 ##efficacy #言動によりダイレクトに更新される場所

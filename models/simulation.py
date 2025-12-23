@@ -24,7 +24,8 @@ def run_outer_loop(agents,max_steps):
     logs = []
     t1 = 0
     #初期値に対してlogを作る（最初は誰も発言がないとする）
-    log_step(t1,0,agents,None,None)
+    log_step(t1, 0, agents, {"type": None, "previous_speaker_id": None, "agent_id": None})
+
     t1 = 1
     while t1 < max_steps:
         t1 = run_inner_loop(agents,t1,logs,max_steps)  # tを渡す場合
@@ -42,13 +43,13 @@ def run_inner_loop(agents,t1,logs,max_steps):
     
     #発言者がいない場合(全員　speak ==0) logとt=1を返す
     if speaker_id is None:
-        log_step(t1,t2,agents,None,None)
+        log_step(t1,t2,agents,{"type": None, "previous_speaker_id": None, "agent_id": None, "agree": None, "attitude": None})
         t1 += 1
         t2 += 1
         return t1
     speaker = next(agent for agent in agents if agent.id == speaker_id)
     #発言者がいる場合、reactionの過程に移動
-    log_step(t1,t2,agents,"Speak",speaker_id)
+    log_step(t1, t2, agents, {"type": "Speak", "previous_speaker_id": None, "agent_id": speaker_id, "agree": None, "attitude": None})
     t1 += 1
     t2 += 1
     
@@ -66,11 +67,12 @@ def run_inner_loop(agents,t1,logs,max_steps):
         agree_dict = {}
         attitude_dict = {}
         for agent in agents:
-            agree = agree_to_speaker(agent,speaker_id,0.2) #あるエージェントがスピーカーにどれだけ同意するか
+            agree = agree_to_speaker(agent,speaker_id,0.1) #あるエージェントがスピーカーにどれだけ同意するか
             agree_dict[agent.id] = agree
             reaction = reaction_decision(agent,speaker_id,agree) #あるエージェントがスピーカーにリアクションを行うかどうか
             reaction_dict[agent.id] = reaction 
-            attitude = attitude_result(agent.attitude_probability,speaker_id) #あるエージェントがスピーカーに持つ態度の大きさ
+            agree_value = list(agree.values())[0]
+            attitude = attitude_result(agent,speaker_id,0.5,0.5,agent.attitude_probability,agree_value) #あるエージェントがスピーカーに持つ態度の大きさ
             attitude_dict[agent.id] = attitude
             
     
@@ -89,7 +91,14 @@ def run_inner_loop(agents,t1,logs,max_steps):
         reactor_attitude = list(attitude_dict[reactor_id].values())[0]#実際のreactorがspeakerに対してどんなattitudeを持っているかの値
         
         #ログを記録させる（agent学習前にログを記録）
-        log_step(t1,t2,agents,"React",reactor_id)
+        log_step(t1,t2,agents,
+            {
+                "type": "React",
+                "previous_speaker_id": speaker_id,
+                "agent_id": reactor_id,
+                "agree": reactor_agree,
+                "attitude": reactor_attitude
+                })
         t1 += 1
         t2 += 1 
         
@@ -121,7 +130,7 @@ def run_inner_loop(agents,t1,logs,max_steps):
                 speaker = agents[idx]
                 break
         
-        update_speak_probability_mean = calc_speak_probability_mean(1,1,1,speaker.assertiveness,speaker.extraversion,update_risk_mean)
+        update_speak_probability_mean = calc_speak_probability_mean(1,1,1,speaker.assertiveness,speaker.extraversion,update_safety_mean)
         update_reaction_probability = calc_reaction_probability(1,1,1,speaker.id,agents)
         update_agree_probability = calc_agree_probability(speaker.id,agents)
         update_attitude_probability = calc_attitude_probability(1,1,speaker.id,agents)

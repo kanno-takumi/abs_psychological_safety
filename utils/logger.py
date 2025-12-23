@@ -17,7 +17,7 @@ def _next_run_index(log_dir: str, agent_id: str) -> int:
     """logs/<agent> 内の <agent>_N.jsonl を走査して N+1 を返す（なければ1）。"""
     if not os.path.isdir(log_dir):
         return 1
-    pat = re.compile(rf"^{re.escape(agent_id)}_(\d+)\.jsonl$")
+    pat = re.compile(rf"^{re.escape(agent_id)}_(\d+)\.jsonl?$")
     max_n = 0
     for fn in os.listdir(log_dir):
         m = pat.match(fn)
@@ -53,7 +53,7 @@ def init(agents_folder_: str, agents_file_: str, log_folder_: str):
         with open(log_filepath, "w", encoding="utf-8") as f:
             pass  # 何も書かない
 
-def log_step(time1, time2, agents, event_type=None, agent_id=None):
+def log_step(time1, time2, agents, event):
     """
     タイムステップごとに1行追記（JSON Lines）。
     出力サイズを抑えるために compact（余計な空白なし）で書き込み。
@@ -65,7 +65,7 @@ def log_step(time1, time2, agents, event_type=None, agent_id=None):
         "time1": time1,
         "time2": time2,
         "agents": [a.__dict__ for a in agents],
-        "event": {"type": event_type, "agent_id": agent_id} if event_type else None
+        "event": event
     }
 
     # 1行追記（compactにするため separators を指定）
