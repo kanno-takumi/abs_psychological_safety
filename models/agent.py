@@ -22,12 +22,14 @@ class Agent:
         self.hierarchies = {int(k): v for k, v in data.get("hierarchies", {}).items()}
         self.efficacy = {int(k): v for k, v in data.get("efficacy", {}).items()}
         self.risk = {int(k): v for k, v in data.get("risk", {}).items()}
+        self.safety = {int(k): v for k, v in data.get("safety", {}).items()}
         self.reaction_probability = {int(k): v for k, v in data.get("reaction_probability", {}).items()}
         self.agree_probability = {int(k): v for k, v in data.get("agree_probability", {}).items()}
         self.attitude_probability = {int(k): v for k, v in data.get("attitude_probability", {}).items()}
 
         self.hierarchy_mean = data.get("hierarchy_mean", 0)
         self.risk_mean = data.get("risk_mean", 0)
+        self.safety_mean = data.get("safety_mean", 0)
         self.speak_probability_mean = data.get("speak_probability_mean", 0)
         
     def __str__(self):

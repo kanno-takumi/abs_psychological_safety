@@ -71,7 +71,8 @@ def calc_efficacy_mean(efficacy):
 def calc_risk(efficacy, toughness, pressure, t):
     #行列で用意。
     # if t == 0:
-    risk = {key: (1 - toughness) * (1- efficacy[key]) for key in efficacy}
+    # risk = {key: (((1 - toughness) * (1- efficacy[key]))**0.5) for key in efficacy}
+    risk = {key: (1- efficacy[key]) for key in efficacy}
     # if t > 0:
     #     print("t>0")
     return risk
@@ -89,20 +90,19 @@ def calc_safety_mean(risk_mean):
     return 1-risk_mean    
 
 def calc_speak_probability_mean(w1,w2,w3,assertiveness,extraversion,safety_mean):
-    speak_probability = (w1 * assertiveness + w2 * extraversion + w3 * safety_mean) / (w1+ w2 + w3)
+    speak_probability = ((w1 * assertiveness + w2 * extraversion + w3 * safety_mean) / (w1+ w2 + w3) - 0.1)*0.8
     return speak_probability
 
 def calc_reaction_probability(w1,w2,w3,agent_id,agents):
     agent_i = next(agent for agent in agents if agent.id == agent_id)
     assertiveness = agent_i.assertiveness
     extraversion = agent_i.extraversion
-    safety = agent_i.risk
     reaction_probabilities = {}
     for agent_j in agents:
         if agent_id == agent_j.id:
             continue
         safety_ij = agent_i.safety.get(agent_j.id)
-        reaction_probability =(w1 * assertiveness + w2 * extraversion + w3 * safety_ij)/(w1 + w2 + w3)
+        reaction_probability =((w1 * assertiveness + w2 * extraversion + w3 * safety_ij)/(w1 + w2 + w3))*0.8
         reaction_probabilities[agent_j.id] = reaction_probability
     return reaction_probabilities
 
@@ -188,7 +188,7 @@ def agree_to_speaker(agent,speaker_id,sigma=0.1):
 
 import random
 
-def reaction_decision(agent_i, speaker_id, agree_to_speaker, alpha1=0.5, alpha2=0.5):
+def reaction_decision(agent_i, speaker_id, agree_to_speaker, alpha1=0.7, alpha2=0.3):
     """
     agent_i: リアクションする側のエージェント（i）
     speaker_id: 発言者のID（j）
@@ -201,7 +201,7 @@ def reaction_decision(agent_i, speaker_id, agree_to_speaker, alpha1=0.5, alpha2=
         return {speaker_id: None}  # 自分自身にはリアクションしない
 
     reaction_prob = agent_i.reaction_probability.get(key, 0.5)
-    agree_deviation = abs(0.5 - agree_to_speaker[speaker_id]) * 2
+    agree_deviation = abs(0.5 - agree_to_speaker[speaker_id]) * 2 #これは本物のagreeの値を見てから決めているから、ここでしか計算ができない。
     combined_prob = (alpha1 * reaction_prob + alpha2 * agree_deviation) / (alpha1 + alpha2)
 
     reaction = 1 if random.random() < combined_prob else 0
@@ -266,7 +266,6 @@ def update_risk(speaker, reactor, attitude, alpha1, alpha2, alpha3):
     
     reaction = 1
     old_value = updated_risk.get(reactor.id)
-    #attitudeは高い方が態度が良いという意味のため、逆転させる
     
     #speakerのefficacyなんだけど、reactorのefficacyとしてreactor.idを示している
     new_value = alpha1 * old_value + alpha2 * attitude + alpha3 * (1 - efficacy[reactor.id])
