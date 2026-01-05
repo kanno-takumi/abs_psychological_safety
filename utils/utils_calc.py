@@ -177,14 +177,17 @@ def agree_to_speaker(agent,speaker_id,sigma=0.1):
     #agent_id == speaker_id の時はagent_prob = 0を返す
     # print(agent.id)
     # print(speaker_id)
-    
+    assertiveness = agent.assertiveness
     if agent.id == speaker_id:
         return {agent.id: None}
     else:
         agree_prob = agent.agree_probability.get(speaker_id,None)
         raw = random.normalvariate(agree_prob,sigma)
         clipped = max(0.0,min(1.0, raw))
-        return {speaker_id: clipped}
+        # agree = 1 - assertiveness * (1-clipped)
+        # agree = 0.5 + assertiveness*(clipped-0.5)
+        agree = clipped * assertiveness + (1-assertiveness)*0.5
+        return {speaker_id: agree}
 
 import random
 
