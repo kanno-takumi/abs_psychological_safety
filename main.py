@@ -49,8 +49,8 @@ for agent in agents:
      # safety = 1 - risk
     agent.safety    = calc_safety(agent.risk)
     agent.safety_mean = calc_safety_mean(agent.risk_mean)  
-    agent.speak_probability_mean = calc_speak_probability_mean(0.4,0.3,0.3,agent.assertiveness,agent.extraversion,agent.safety_mean)
-    agent.reaction_probability   = calc_reaction_probability(0.4,0.3,0.3,agent.id,agents)
+    agent.speak_probability_mean = calc_speak_probability_mean(2/5,1/5,2/5,agent.assertiveness,agent.extraversion,agent.safety_mean)
+    agent.reaction_probability   = calc_reaction_probability(2/5,1/5,2/5,agent.id,agents)
     agent.agree_probability      = calc_agree_probability(agent.id,agents)
     agent.attitude_probability   = calc_attitude_probability(1,1,agent.id,agents)
 

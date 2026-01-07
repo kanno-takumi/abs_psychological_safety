@@ -90,7 +90,7 @@ def calc_safety_mean(risk_mean):
     return 1-risk_mean    
 
 def calc_speak_probability_mean(w1,w2,w3,assertiveness,extraversion,safety_mean):
-    speak_probability = ((w1 * assertiveness + w2 * extraversion + w3 * safety_mean) / (w1+ w2 + w3) - 0.1)*0.8
+    speak_probability = ((w1 * assertiveness + w2 * extraversion + w3 * safety_mean) / (w1+ w2 + w3) )**2
     return speak_probability
 
 def calc_reaction_probability(w1,w2,w3,agent_id,agents):
@@ -102,10 +102,11 @@ def calc_reaction_probability(w1,w2,w3,agent_id,agents):
         if agent_id == agent_j.id:
             continue
         safety_ij = agent_i.safety.get(agent_j.id)
-        reaction_probability =((w1 * assertiveness + w2 * extraversion + w3 * safety_ij)/(w1 + w2 + w3))*0.8
+        reaction_probability =((w1 * assertiveness + w2 * extraversion + w3 * safety_ij)/(w1 + w2 + w3))**2
         reaction_probabilities[agent_j.id] = reaction_probability
     return reaction_probabilities
 
+#内的な同意可能性であって外部同意可能性ではない。
 def calc_agree_probability(agent_id,agents):
     agent_i = next(agent for agent in agents if agent.id == agent_id)
     agree_probabilities = {}
@@ -191,19 +192,20 @@ def agree_to_speaker(agent,speaker_id,sigma=0.1):
 
 import random
 
-def reaction_decision(agent_i, speaker_id, agree_to_speaker, alpha1=0.7, alpha2=0.3):
+def reaction_decision(agent_i, speaker_id, agree_to_speaker, alpha1=0.75, alpha2=0.25):
     """
     agent_i: リアクションする側のエージェント（i）
     speaker_id: 発言者のID（j）
     
     return: reaction_ij を {speaker_id: 1 or 0} の辞書で返す
     """
-    key = f"ito{speaker_id}"
+    # key = f"ito{speaker_id}"
 
     if agent_i.id == speaker_id:
         return {speaker_id: None}  # 自分自身にはリアクションしない
 
-    reaction_prob = agent_i.reaction_probability.get(key, 0.5)
+    reaction_prob = agent_i.reaction_probability.get(speaker_id, 0.5)
+    # print(reaction_prob)
     agree_deviation = abs(0.5 - agree_to_speaker[speaker_id]) * 2 #これは本物のagreeの値を見てから決めているから、ここでしか計算ができない。
     combined_prob = (alpha1 * reaction_prob + alpha2 * agree_deviation) / (alpha1 + alpha2)
 
@@ -220,7 +222,6 @@ def reactor_decision(reaction_dict):
         return random.choice(candidates)
     else:
         return None
-    
 
 def attitude_result(agent,speaker_id,w1, w2, attitude_probability, agreement):
     if agent.id == speaker_id:

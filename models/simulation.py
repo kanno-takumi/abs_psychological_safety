@@ -130,8 +130,8 @@ def run_inner_loop(agents,t1,logs,max_steps):
                 speaker = agents[idx]
                 break
         
-        update_speak_probability_mean = calc_speak_probability_mean(0.4,0.3,0.3,speaker.assertiveness,speaker.extraversion,update_safety_mean)
-        update_reaction_probability = calc_reaction_probability(0.4,0.3,0.3,speaker.id,agents)
+        update_speak_probability_mean = calc_speak_probability_mean(2/5,1/5,2/5,speaker.assertiveness,speaker.extraversion,update_safety_mean)
+        update_reaction_probability = calc_reaction_probability(2/5,1/5,2/5,speaker.id,agents)
         update_agree_probability = calc_agree_probability(speaker.id,agents)
         update_attitude_probability = calc_attitude_probability(1,1,speaker.id,agents)
         
