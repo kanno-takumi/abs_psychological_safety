@@ -72,7 +72,7 @@ def run_inner_loop(agents,t1,logs,max_steps):
             reaction = reaction_decision(agent,speaker_id,agree) #あるエージェントがスピーカーにリアクションを行うかどうか
             reaction_dict[agent.id] = reaction 
             agree_value = list(agree.values())[0]
-            attitude = attitude_result(agent,speaker_id,0.5,0.5,agent.attitude_probability,agree_value) #あるエージェントがスピーカーに持つ態度の大きさ
+            attitude = attitude_result(agent,speaker_id,0.25,0.75,agent.attitude_probability,agree_value) #あるエージェントがスピーカーに持つ態度の大きさ
             attitude_dict[agent.id] = attitude
             
     
@@ -112,7 +112,7 @@ def run_inner_loop(agents,t1,logs,max_steps):
                 speaker = agents[idx]  # ローカル参照も最新に
                 break
         
-        _, updated_risk = update_risk(speaker,reactor,reactor_attitude,2/5,1/5,2/5) #言動によりダイレクトに更新される場所
+        _, updated_risk = update_risk(speaker,reactor,reactor_attitude,1/3,1/3,1/3) #言動によりダイレクトに更新される場所
         update_risk_mean = calc_risk_mean(updated_risk)
         for idx, agent in enumerate(agents):
             if agent.id == speaker_id:
@@ -130,8 +130,8 @@ def run_inner_loop(agents,t1,logs,max_steps):
                 speaker = agents[idx]
                 break
         
-        update_speak_probability_mean = calc_speak_probability_mean(2/5,1/5,2/5,speaker.assertiveness,speaker.extraversion,update_safety_mean)
-        update_reaction_probability = calc_reaction_probability(2/5,1/5,2/5,speaker.id,agents)
+        update_speak_probability_mean = calc_speak_probability_mean(2/6,1/6,3/6,speaker.assertiveness,speaker.extraversion,update_safety_mean)
+        update_reaction_probability = calc_reaction_probability(2/6,1/6,3/6,speaker.id,agents)
         update_agree_probability = calc_agree_probability(speaker.id,agents)
         update_attitude_probability = calc_attitude_probability(1,1,speaker.id,agents)
         

@@ -1,0 +1,47 @@
+[
+  {
+    "id": 0,
+    "skill": { "domain": 0.95, "groupwork": 0.90, "business": 0.93, "creation": 0.92 },
+    "value_to_cn": { "x_axis": 0.75, "y_axis": 0.90 },
+    "pressure": 0.10,
+    "assertiveness": 0.15,
+    "toughness": 0.80,
+    "extraversion": 0.85
+  },
+  {
+    "id": 1,
+    "skill": { "domain": 0.60, "groupwork": 0.58, "business": 0.55, "creation": 0.62 },
+    "value_to_cn": { "x_axis": -0.68, "y_axis": 0.92 },
+    "pressure": 0.05,
+    "assertiveness": 0.20,
+    "toughness": 0.45,
+    "extraversion": 0.45
+  },
+  {
+    "id": 2,
+    "skill": { "domain": 0.55, "groupwork": 0.60, "business": 0.50, "creation": 0.58 },
+    "value_to_cn": { "x_axis": 0.82, "y_axis": -0.59 },
+    "pressure": 0.05,
+    "assertiveness": 0.18,
+    "toughness": 0.42,
+    "extraversion": 0.40
+  },
+  {
+    "id": 3,
+    "skill": { "domain": 0.52, "groupwork": 0.50, "business": 0.48, "creation": 0.55 },
+    "value_to_cn": { "x_axis": 0.14, "y_axis": 0.11 },
+    "pressure": 0.05,
+    "assertiveness": 0.15,
+    "toughness": 0.40,
+    "extraversion": 0.42
+  },
+  {
+    "id": 4,
+    "skill": { "domain": 0.58, "groupwork": 0.54, "business": 0.57, "creation": 0.53 },
+    "value_to_cn": { "x_axis": -0.76, "y_axis": -0.83 },
+    "pressure": 0.05,
+    "assertiveness": 0.17,
+    "toughness": 0.41,
+    "extraversion": 0.43
+  }
+]

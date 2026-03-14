@@ -1,0 +1,964 @@
+{
+  "nodes": [
+    {
+      "time1": 0,
+      "time2": 0,
+      "agent": null,
+      "type": null,
+      "attitude": null,
+      "agree": null
+    },
+    {
+      "time1": 1,
+      "time2": 0,
+      "agent": 1,
+      "type": "Speak",
+      "attitude": null,
+      "agree": null
+    },
+    {
+      "time1": 2,
+      "time2": 1,
+      "agent": 2,
+      "type": "React",
+      "attitude": 0.613246784640096,
+      "agree": 0.43046262047987216
+    },
+    {
+      "time1": 3,
+      "time2": 2,
+      "agent": 1,
+      "type": "React",
+      "attitude": 0.6541959694220728,
+      "agree": 0.3704531255261163
+    },
+    {
+      "time1": 4,
+      "time2": 3,
+      "agent": 3,
+      "type": "React",
+      "attitude": 0.29415539320041895,
+      "agree": 0.8546678090661081
+    },
+    {
+      "time1": 5,
+      "time2": 4,
+      "agent": 1,
+      "type": "React",
+      "attitude": 0.5061091000907014,
+      "agree": 0.5980380616197667
+    },
+    {
+      "time1": 6,
+      "time2": 5,
+      "agent": 2,
+      "type": "React",
+      "attitude": 0.6597205837979281,
+      "agree": 0.357270087899484
+    },
+    {
+      "time1": 7,
+      "time2": 0,
+      "agent": 4,
+      "type": "Speak",
+      "attitude": null,
+      "agree": null
+    },
+    {
+      "time1": 8,
+      "time2": 0,
+      "agent": 3,
+      "type": "Speak",
+      "attitude": null,
+      "agree": null
+    },
+    {
+      "time1": 9,
+      "time2": 1,
+      "agent": 2,
+      "type": "React",
+      "attitude": 0.6253089476956062,
+      "agree": 0.4175047364058585
+    },
+    {
+      "time1": 10,
+      "time2": 2,
+      "agent": 3,
+      "type": "React",
+      "attitude": 0.7352638381319041,
+      "agree": 0.2597700725189791
+    },
+    {
+      "time1": 11,
+      "time2": 3,
+      "agent": 1,
+      "type": "React",
+      "attitude": 0.5309828300866906,
+      "agree": 0.5648730882917812
+    },
+    {
+      "time1": 12,
+      "time2": 4,
+      "agent": 2,
+      "type": "React",
+      "attitude": 0.5230699378541449,
+      "agree": 0.5394709491578615
+    },
+    {
+      "time1": 13,
+      "time2": 5,
+      "agent": 3,
+      "type": "React",
+      "attitude": 0.5187772653535859,
+      "agree": 0.5484188362234034
+    },
+    {
+      "time1": 14,
+      "time2": 6,
+      "agent": 4,
+      "type": "React",
+      "attitude": 0.5665028267118722,
+      "agree": 0.4925795643841703
+    },
+    {
+      "time1": 15,
+      "time2": 7,
+      "agent": 3,
+      "type": "React",
+      "attitude": 0.628723069292877,
+      "agree": 0.4088435162472869
+    },
+    {
+      "time1": 16,
+      "time2": 8,
+      "agent": 1,
+      "type": "React",
+      "attitude": 0.4489023522761598,
+      "agree": 0.6743137253724889
+    },
+    {
+      "time1": 17,
+      "time2": 9,
+      "agent": 3,
+      "type": "React",
+      "attitude": 0.4819706217815743,
+      "agree": 0.6169901970738337
+    },
+    {
+      "time1": 18,
+      "time2": 10,
+      "agent": 4,
+      "type": "React",
+      "attitude": 0.5996449317370728,
+      "agree": 0.4397483515078344
+    },
+    {
+      "time1": 19,
+      "time2": 11,
+      "agent": 0,
+      "type": "React",
+      "attitude": 0.4619311091239061,
+      "agree": 0.6315918545014585
+    },
+    {
+      "time1": 20,
+      "time2": 12,
+      "agent": 4,
+      "type": "React",
+      "attitude": 0.23026520075528434,
+      "agree": 0.95
+    },
+    {
+      "time1": 21,
+      "time2": 13,
+      "agent": 2,
+      "type": "React",
+      "attitude": 0.5793759106503245,
+      "agree": 0.4808321191329008
+    },
+    {
+      "time1": 22,
+      "time2": 0,
+      "agent": 1,
+      "type": "Speak",
+      "attitude": null,
+      "agree": null
+    },
+    {
+      "time1": 23,
+      "time2": 1,
+      "agent": 4,
+      "type": "React",
+      "attitude": 0.3787958155522832,
+      "agree": 0.7397305792636224
+    },
+    {
+      "time1": 24,
+      "time2": 2,
+      "agent": 3,
+      "type": "React",
+      "attitude": 0.7579125962297546,
+      "agree": 0.23135791541252865
+    },
+    {
+      "time1": 25,
+      "time2": 0,
+      "agent": 2,
+      "type": "Speak",
+      "attitude": null,
+      "agree": null
+    },
+    {
+      "time1": 26,
+      "time2": 1,
+      "agent": 0,
+      "type": "React",
+      "attitude": 0.4660315010707612,
+      "agree": 0.6227913319056517
+    },
+    {
+      "time1": 27,
+      "time2": 2,
+      "agent": 3,
+      "type": "React",
+      "attitude": 0.6953191034001602,
+      "agree": 0.32749119546645294
+    },
+    {
+      "time1": 28,
+      "time2": 3,
+      "agent": 4,
+      "type": "React",
+      "attitude": 0.5282888378639856,
+      "agree": 0.5188094274859036
+    },
+    {
+      "time1": 29,
+      "time2": 0,
+      "agent": 4,
+      "type": "Speak",
+      "attitude": null,
+      "agree": null
+    },
+    {
+      "time1": 30,
+      "time2": 1,
+      "agent": 0,
+      "type": "React",
+      "attitude": 0.4238041072528089,
+      "agree": 0.7111631236209612
+    },
+    {
+      "time1": 31,
+      "time2": 2,
+      "agent": 2,
+      "type": "React",
+      "attitude": 0.3283810694948647,
+      "agree": 0.8203732498336285
+    },
+    {
+      "time1": 32,
+      "time2": 3,
+      "agent": 1,
+      "type": "React",
+      "attitude": 0.6451726440375702,
+      "agree": 0.38183870670146164
+    },
+    {
+      "time1": 33,
+      "time2": 4,
+      "agent": 3,
+      "type": "React",
+      "attitude": 0.40037919569645886,
+      "agree": 0.725778765187321
+    },
+    {
+      "time1": 34,
+      "time2": 5,
+      "agent": 1,
+      "type": "React",
+      "attitude": 0.5127501901950053,
+      "agree": 0.5880420609689345
+    },
+    {
+      "time1": 35,
+      "time2": 6,
+      "agent": 3,
+      "type": "React",
+      "attitude": 0.3886790948961019,
+      "agree": 0.739851210594969
+    },
+    {
+      "time1": 36,
+      "time2": 7,
+      "agent": 0,
+      "type": "React",
+      "attitude": 0.536173167359228,
+      "agree": 0.5171678043173108
+    },
+    {
+      "time1": 37,
+      "time2": 8,
+      "agent": 2,
+      "type": "React",
+      "attitude": 0.4079596093301468,
+      "agree": 0.7142685300532523
+    },
+    {
+      "time1": 38,
+      "time2": 9,
+      "agent": 1,
+      "type": "React",
+      "attitude": 0.6390118358777019,
+      "agree": 0.3900531175812861
+    },
+    {
+      "time1": 39,
+      "time2": 10,
+      "agent": 2,
+      "type": "React",
+      "attitude": 0.5803136679372651,
+      "agree": 0.45696246236720645
+    },
+    {
+      "time1": 40,
+      "time2": 11,
+      "agent": 0,
+      "type": "React",
+      "attitude": 0.5078790383118224,
+      "agree": 0.5930290500265816
+    },
+    {
+      "time1": 41,
+      "time2": 12,
+      "agent": 2,
+      "type": "React",
+      "attitude": 0.3820946234972842,
+      "agree": 0.7476166894835417
+    },
+    {
+      "time1": 42,
+      "time2": 13,
+      "agent": 3,
+      "type": "React",
+      "attitude": 0.5682431329064822,
+      "agree": 0.48246434615287503
+    },
+    {
+      "time1": 43,
+      "time2": 14,
+      "agent": 0,
+      "type": "React",
+      "attitude": 0.5627356363387142,
+      "agree": 0.4817511790113294
+    },
+    {
+      "time1": 44,
+      "time2": 15,
+      "agent": 1,
+      "type": "React",
+      "attitude": 0.5682233732050985,
+      "agree": 0.5000771690598687
+    },
+    {
+      "time1": 45,
+      "time2": 16,
+      "agent": 2,
+      "type": "React",
+      "attitude": 0.5417158073042685,
+      "agree": 0.5084262765445351
+    },
+    {
+      "time1": 46,
+      "time2": 17,
+      "agent": 4,
+      "type": "React",
+      "attitude": 0.4382505286137038,
+      "agree": 0.6590570812326242
+    },
+    {
+      "time1": 47,
+      "time2": 18,
+      "agent": 2,
+      "type": "React",
+      "attitude": 0.5578808718626846,
+      "agree": 0.5156742826276766
+    },
+    {
+      "time1": 48,
+      "time2": 19,
+      "agent": 1,
+      "type": "React",
+      "attitude": 0.6028277634156665,
+      "agree": 0.44024360503980225
+    },
+    {
+      "time1": 49,
+      "time2": 20,
+      "agent": 2,
+      "type": "React",
+      "attitude": 0.5137052784383642,
+      "agree": 0.5484219326312911
+    },
+    {
+      "time1": 50,
+      "time2": 21,
+      "agent": 1,
+      "type": "React",
+      "attitude": 0.6678359126419402,
+      "agree": 0.3577972379572845
+    },
+    {
+      "time1": 51,
+      "time2": 22,
+      "agent": 3,
+      "type": "React",
+      "attitude": 0.4821568875518591,
+      "agree": 0.6152141537206262
+    },
+    {
+      "time1": 52,
+      "time2": 23,
+      "agent": 0,
+      "type": "React",
+      "attitude": 0.5780838101955925,
+      "agree": 0.461286947202158
+    },
+    {
+      "time1": 53,
+      "time2": 24,
+      "agent": 3,
+      "type": "React",
+      "attitude": 0.6819783456411701,
+      "agree": 0.3342993036563417
+    },
+    {
+      "time1": 54,
+      "time2": 25,
+      "agent": 1,
+      "type": "React",
+      "attitude": 0.44225639462576793,
+      "agree": 0.6789129010756585
+    },
+    {
+      "time1": 55,
+      "time2": 26,
+      "agent": 3,
+      "type": "React",
+      "attitude": 0.40425197618732467,
+      "agree": 0.7246680389451415
+    },
+    {
+      "time1": 56,
+      "time2": 0,
+      "agent": 4,
+      "type": "Speak",
+      "attitude": null,
+      "agree": null
+    },
+    {
+      "time1": 57,
+      "time2": 1,
+      "agent": 0,
+      "type": "React",
+      "attitude": 0.4569496035113606,
+      "agree": 0.6669691286095589
+    },
+    {
+      "time1": 58,
+      "time2": 2,
+      "agent": 2,
+      "type": "React",
+      "attitude": 0.41339767719542975,
+      "agree": 0.7058792845526809
+    },
+    {
+      "time1": 59,
+      "time2": 3,
+      "agent": 0,
+      "type": "React",
+      "attitude": 0.5207757268904023,
+      "agree": 0.5804537662222458
+    },
+    {
+      "time1": 60,
+      "time2": 0,
+      "agent": 1,
+      "type": "Speak",
+      "attitude": null,
+      "agree": null
+    },
+    {
+      "time1": 61,
+      "time2": 1,
+      "agent": 4,
+      "type": "React",
+      "attitude": 0.5203077138326899,
+      "agree": 0.5510480482230802
+    },
+    {
+      "time1": 62,
+      "time2": 2,
+      "agent": 0,
+      "type": "React",
+      "attitude": 0.37303885525247216,
+      "agree": 0.7788501262880769
+    },
+    {
+      "time1": 63,
+      "time2": 0,
+      "agent": 4,
+      "type": "Speak",
+      "attitude": null,
+      "agree": null
+    },
+    {
+      "time1": 64,
+      "time2": 1,
+      "agent": 3,
+      "type": "React",
+      "attitude": 0.7093964620945002,
+      "agree": 0.29959006007495265
+    },
+    {
+      "time1": 65,
+      "time2": 0,
+      "agent": 0,
+      "type": "Speak",
+      "attitude": null,
+      "agree": null
+    },
+    {
+      "time1": 66,
+      "time2": 1,
+      "agent": 2,
+      "type": "React",
+      "attitude": 0.45280609459257204,
+      "agree": 0.6520857327707426
+    },
+    {
+      "time1": 67,
+      "time2": 2,
+      "agent": 4,
+      "type": "React",
+      "attitude": 0.5682180648444998,
+      "agree": 0.48684874773731995
+    },
+    {
+      "time1": 68,
+      "time2": 3,
+      "agent": 1,
+      "type": "React",
+      "attitude": 0.4786420331281183,
+      "agree": 0.62119634174332
+    },
+    {
+      "time1": 69,
+      "time2": 4,
+      "agent": 3,
+      "type": "React",
+      "attitude": 0.41377456869449525,
+      "agree": 0.7119712489355808
+    },
+    {
+      "time1": 70,
+      "time2": 0,
+      "agent": 0,
+      "type": "Speak",
+      "attitude": null,
+      "agree": null
+    },
+    {
+      "time1": 71,
+      "time2": 1,
+      "agent": 3,
+      "type": "React",
+      "attitude": 0.5965666147097071,
+      "agree": 0.44818161156495906
+    },
+    {
+      "time1": 72,
+      "time2": 2,
+      "agent": 1,
+      "type": "React",
+      "attitude": 0.47063337810280914,
+      "agree": 0.6460205250672537
+    },
+    {
+      "time1": 73,
+      "time2": 3,
+      "agent": 4,
+      "type": "React",
+      "attitude": 0.5202693347860675,
+      "agree": 0.55825650571544
+    },
+    {
+      "time1": 74,
+      "time2": 4,
+      "agent": 0,
+      "type": "React",
+      "attitude": 0.40221482347103443,
+      "agree": 0.7399488353299939
+    },
+    {
+      "time1": 75,
+      "time2": 0,
+      "agent": 4,
+      "type": "Speak",
+      "attitude": null,
+      "agree": null
+    },
+    {
+      "time1": 76,
+      "time2": 1,
+      "agent": 3,
+      "type": "React",
+      "attitude": 0.6162475690069579,
+      "agree": 0.42378858419167587
+    },
+    {
+      "time1": 77,
+      "time2": 0,
+      "agent": 3,
+      "type": "Speak",
+      "attitude": null,
+      "agree": null
+    },
+    {
+      "time1": 78,
+      "time2": 1,
+      "agent": 0,
+      "type": "React",
+      "attitude": 0.722057434727483,
+      "agree": 0.26893925405024116
+    },
+    {
+      "time1": 79,
+      "time2": 2,
+      "agent": 1,
+      "type": "React",
+      "attitude": 0.4801707029561994,
+      "agree": 0.6174807293917342
+    },
+    {
+      "time1": 80,
+      "time2": 3,
+      "agent": 3,
+      "type": "React",
+      "attitude": 0.40781396868174624,
+      "agree": 0.7203755516631163
+    },
+    {
+      "time1": 81,
+      "time2": 4,
+      "agent": 1,
+      "type": "React",
+      "attitude": 0.5648558339585203,
+      "agree": 0.521594275658297
+    },
+    {
+      "time1": 82,
+      "time2": 5,
+      "agent": 2,
+      "type": "React",
+      "attitude": 0.6282642991013964,
+      "agree": 0.3912458838331663
+    },
+    {
+      "time1": 83,
+      "time2": 6,
+      "agent": 4,
+      "type": "React",
+      "attitude": 0.4894777197184243,
+      "agree": 0.5918358745720873
+    },
+    {
+      "time1": 84,
+      "time2": 7,
+      "agent": 2,
+      "type": "React",
+      "attitude": 0.6184167175498224,
+      "agree": 0.4301419112107542
+    },
+    {
+      "time1": 85,
+      "time2": 0,
+      "agent": 2,
+      "type": "Speak",
+      "attitude": null,
+      "agree": null
+    },
+    {
+      "time1": 86,
+      "time2": 1,
+      "agent": 1,
+      "type": "React",
+      "attitude": 0.648786599367978,
+      "agree": 0.37472043614549405
+    },
+    {
+      "time1": 87,
+      "time2": 0,
+      "agent": 3,
+      "type": "Speak",
+      "attitude": null,
+      "agree": null
+    },
+    {
+      "time1": 88,
+      "time2": 0,
+      "agent": 0,
+      "type": "Speak",
+      "attitude": null,
+      "agree": null
+    },
+    {
+      "time1": 89,
+      "time2": 1,
+      "agent": 4,
+      "type": "React",
+      "attitude": 0.2475238284520464,
+      "agree": 0.9462068334435068
+    },
+    {
+      "time1": 90,
+      "time2": 2,
+      "agent": 2,
+      "type": "React",
+      "attitude": 0.49134525462928214,
+      "agree": 0.5995705284381412
+    },
+    {
+      "time1": 91,
+      "time2": 3,
+      "agent": 4,
+      "type": "React",
+      "attitude": 0.5451754908901851,
+      "agree": 0.5218766449109427
+    },
+    {
+      "time1": 92,
+      "time2": 0,
+      "agent": 1,
+      "type": "Speak",
+      "attitude": null,
+      "agree": null
+    },
+    {
+      "time1": 93,
+      "time2": 1,
+      "agent": 2,
+      "type": "React",
+      "attitude": 0.558555999578457,
+      "agree": 0.48339082850115905
+    },
+    {
+      "time1": 94,
+      "time2": 2,
+      "agent": 3,
+      "type": "React",
+      "attitude": 0.5829530302816973,
+      "agree": 0.46285114965258817
+    },
+    {
+      "time1": 95,
+      "time2": 3,
+      "agent": 1,
+      "type": "React",
+      "attitude": 0.5405687818854525,
+      "agree": 0.5539770117557206
+    },
+    {
+      "time1": 96,
+      "time2": 4,
+      "agent": 2,
+      "type": "React",
+      "attitude": 0.5498121199578185,
+      "agree": 0.4950493346620103
+    },
+    {
+      "time1": 97,
+      "time2": 5,
+      "agent": 0,
+      "type": "React",
+      "attitude": 0.5548518564008473,
+      "agree": 0.5311362352854665
+    },
+    {
+      "time1": 98,
+      "time2": 6,
+      "agent": 4,
+      "type": "React",
+      "attitude": 0.37578041120965344,
+      "agree": 0.775198056433364
+    },
+    {
+      "time1": 99,
+      "time2": 7,
+      "agent": 1,
+      "type": "React",
+      "attitude": 0.532713220512017,
+      "agree": 0.5459272514295463
+    },
+    {
+      "time1": 100,
+      "time2": 0,
+      "agent": 4,
+      "type": "Speak",
+      "attitude": null,
+      "agree": null
+    },
+    {
+      "time1": 101,
+      "time2": 1,
+      "agent": 0,
+      "type": "React",
+      "attitude": 0.47405494343310706,
+      "agree": 0.6554263192025547
+    },
+    {
+      "time1": 102,
+      "time2": 2,
+      "agent": 3,
+      "type": "React",
+      "attitude": 0.6534835273643581,
+      "agree": 0.35729236080929133
+    },
+    {
+      "time1": 103,
+      "time2": 3,
+      "agent": 0,
+      "type": "React",
+      "attitude": 0.6476556516879154,
+      "agree": 0.36529746001203145
+    },
+    {
+      "time1": 104,
+      "time2": 4,
+      "agent": 1,
+      "type": "React",
+      "attitude": 0.5555954920388182,
+      "agree": 0.5169143439482425
+    },
+    {
+      "time1": 105,
+      "time2": 5,
+      "agent": 3,
+      "type": "React",
+      "attitude": 0.42519039505085776,
+      "agree": 0.6865015451833646
+    },
+    {
+      "time1": 106,
+      "time2": 0,
+      "agent": 2,
+      "type": "Speak",
+      "attitude": null,
+      "agree": null
+    },
+    {
+      "time1": 107,
+      "time2": 1,
+      "agent": 0,
+      "type": "React",
+      "attitude": 0.5199761887823907,
+      "agree": 0.5776371254434087
+    },
+    {
+      "time1": 108,
+      "time2": 2,
+      "agent": 4,
+      "type": "React",
+      "attitude": 0.29761040958029494,
+      "agree": 0.8740338002786028
+    },
+    {
+      "time1": 109,
+      "time2": 3,
+      "agent": 3,
+      "type": "React",
+      "attitude": 0.6587049732346357,
+      "agree": 0.3671787118881053
+    },
+    {
+      "time1": 110,
+      "time2": 4,
+      "agent": 1,
+      "type": "React",
+      "attitude": 0.5114032420225609,
+      "agree": 0.5915958488762276
+    },
+    {
+      "time1": 111,
+      "time2": 0,
+      "agent": 1,
+      "type": "Speak",
+      "attitude": null,
+      "agree": null
+    },
+    {
+      "time1": 112,
+      "time2": 0,
+      "agent": 4,
+      "type": "Speak",
+      "attitude": null,
+      "agree": null
+    },
+    {
+      "time1": 113,
+      "time2": 1,
+      "agent": 3,
+      "type": "React",
+      "attitude": 0.6563846121389101,
+      "agree": 0.37027252668240623
+    },
+    {
+      "time1": 114,
+      "time2": 0,
+      "agent": 1,
+      "type": "Speak",
+      "attitude": null,
+      "agree": null
+    },
+    {
+      "time1": 115,
+      "time2": 1,
+      "agent": 0,
+      "type": "React",
+      "attitude": 0.60215198557018,
+      "agree": 0.44621501861679835
+    },
+    {
+      "time1": 116,
+      "time2": 2,
+      "agent": 2,
+      "type": "React",
+      "attitude": 0.41863164774469663,
+      "agree": 0.6951498176463569
+    },
+    {
+      "time1": 117,
+      "time2": 3,
+      "agent": 3,
+      "type": "React",
+      "attitude": 0.608373266652173,
+      "agree": 0.4289575011586207
+    },
+    {
+      "time1": 118,
+      "time2": 4,
+      "agent": 2,
+      "type": "React",
+      "attitude": 0.5142833203527918,
+      "agree": 0.5523777071956457
+    },
+    {
+      "time1": 119,
+      "time2": 5,
+      "agent": 1,
+      "type": "React",
+      "attitude": 0.6323137881334715,
+      "agree": 0.4003544926197233
+    }
+  ]
+}

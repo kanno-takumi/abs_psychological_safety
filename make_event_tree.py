@@ -186,3 +186,5 @@ def generate_event_tree(file_name):
     plt.close()
 
     print(f"✅ イベントツリーを保存しました: {out_path}")
+
+# generate_event_tree("nomura_1.jsonl")
