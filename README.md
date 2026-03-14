@@ -1,117 +1,326 @@
-# ABM Project for Group Work Simulation
+# Psychological Safety Agent-Based Simulation
 
-## ⭐️ Outline
-This project simulates dynamics of psychological safety using Agent-Based Modeling (ABM), with a focus on individual traits, actions, and interaction.
-By defining agents with individual traits and incorporating their behaviors and team interactions into an Agent-Based Modeling, we dynamically simulate how psychological safety evolves over time.
-Distinctive features of this model are its ability to capture the fluctuations of psychological safety depending on the situation rather than treating it as a simple condition-dependent factor and simplified experimental environmental as an alternative to social experiments, which are often difficult to conduct as preliminary studies. In this way, the model supports the exploration of appropriate team compositions and management interventions.
+This repository implements an **Agent-Based Model (ABM)** designed to reproduce and analyze the **dynamics of psychological safety in team discussions**.
 
-本研究は，ビジネスアイデア構想におけるアイデア発想フェーズにおいて，個人特性・行動・相互作用が心理的安全性に与えるダイナミクスを再現・分析することを目的とする．
-個人特性を持つエージェントを設定し，行動やチーム内の相互作用を組み込んだABM(Agent-Baased Modeling) を構築することで，心理的安全性が時間とともに変化する過程を動的にシミュレーションする．
-本モデルは，単純な条件依存ではなく，状況に応じて揺らぐ心理的安全性を表現できる点，さらに予備実験が行いづらい社会実験に代わり簡易的な実験環境を提供できる点に特徴がある．
-これにより，適切なチーム編成やマネジメント介入の検討を支援する．
+The simulation models conversational interactions among agents. Psychological safety is treated as a **dynamic variable that evolves through interpersonal interactions**, rather than as a static team property.
 
-## 🏁 Project Purpose
-This study aims to reenact and analyze dynamics of psychological safety in the idea generation phase on business ideation, focusing on how individual traits, behaviors, and interactions influenece these dynamics using Agent-Based Modeling
+The model records interaction events and provides tools for reconstructing and visualizing the dynamics of group discussions.
 
-ビジネスアイデア構想におけるアイデア発想フェーズにおいて，個人特性・行動・相互作用が心理的安全性に与えるダイナミクスをABMにより再現・分析することを目的とする．
+---
 
-## 🗂️ Project Structure
+# Project Structure
 
-```bash
-abm_project/
-│
-├── models/
-│   └── agent_model.py         # Agent class: state, actions, internal variables
-│   └── interaction_rules.py   # Rules for speaking, reacting, psychological state updates
-│   └── trust_dynamics.py      # Trust and risk update mechanisms
-│
-├── data/
-│   └── initial_data.csv       # Optional: manually set initial values
-│   └── simulation_log.csv     # Output logs of each simulation run
-│
-├── utils/
-│   └── math_utils.py          # Similarity, normalization, score calculations
-│   └── visualization.py       # Network plots, skill radar charts, etc.
-│
-├── main.py                    # Simulation runner: executes simulation steps
-└── README.md                  # Project documentation (this file)
+```
+abs_psychological_safety/
+
+agents/
+models/
+utils/
+
+event_logs/
+logs/
+graphs/
+paper_figs/
+
+main.py
+
+make_event_log.py
+make_event_tree.py
+make_event_tree_bit.py
+
+make_graphs.py
+makegraph_3prob.py
+makegraph_reactionprob.py
+makegraph_speakprob.py
+
+make_paper_figure.py
+manage_log.py
+
+trash/
 ```
 
-## ⛽️ Parameter Definition Overview
+---
 
-Parameters are organized into five modules based on their roles in the simulation.
+# Directory Description
+
+## agents/
+
+Contains definitions and initialization of agents used in the simulation.
+
+Agents represent participants in a discussion and maintain internal psychological states as well as interpersonal states toward other agents.
+
+Agent-related parameters are initialized here.
 
 ---
 
-### ① `agent_static.py` – Individual Static Traits (Non-Updating)
+## models/
 
-These parameters are initialized at the beginning of the simulation and remain fixed unless externally modified.
+Contains the behavioral logic used in the simulation.
 
-| Parameter          | Description                                         |
-|--------------------|-----------------------------------------------------|
-| `id`               | Agent identifier                                    |
-| `gender`, `age`    | Basic demographic attributes                        |
-| `value_x`, `value_y` | Agent's value orientation toward carbon neutrality (2D axes) |
-| `attitude`         | Attitudinal stance (e.g., passive/active)          |
-| `style`            | Interaction style (e.g., cooperative/conflictual)  |
-| `mental_strength`  | Mental resilience or tolerance                      |
-| `atmosphere`       | The kind of atmosphere the agent projects           |
-| `mood`             | Current emotional state                             |
-| `knowledge_dict`   | Dictionary of knowledge levels related to CN fields |
-| └ `energy`, `transport`, `building`, `agriculture`, `waste`, `system` | Domain-specific CN knowledge scores |
+This includes rules that determine:
+
+- speaking probability  
+- reaction probability  
+- state updates after interactions  
+- psychological safety updates  
+
+These rules define how agent states evolve through interactions.
 
 ---
 
-### ② `agent_to_other.py` – Perceptions Toward Others (Dict Format)
+## utils/
 
-These parameters represent each agent's feelings toward every other agent.
+Utility functions used throughout the project.
 
-| Parameter                   | Description                                        |
-|-----------------------------|----------------------------------------------------|
-| `trust_or_resignation[id]` | Level of trust or resignation toward another agent |
-| `interpersonal_risk[id]`   | Perceived interpersonal risk when interacting      |
+Typical functionality includes:
 
----
-
-### ③ `agent_to_self.py` – Internal Self-Evaluation
-
-These parameters reflect how each agent perceives their own standing and capabilities.
-
-| Parameter           | Description                                         |
-|---------------------|-----------------------------------------------------|
-| `self_efficacy`     | Belief in one’s own ability to contribute           |
-| `opinion_position`  | Perceived relative minority/majority status of opinion |
+- probability calculations  
+- normalization functions  
+- helper operations used by simulation modules  
 
 ---
 
-### ④ `agent_to_team.py` – Perceptions of the Team
+## event_logs/
 
-These parameters represent an agent’s subjective experience of the team context.
+Stores structured interaction logs generated from simulation runs.
 
-| Parameter                   | Description                                  |
-|-----------------------------|----------------------------------------------|
-| `agent_psychological_safety` | Individual's psychological safety within the team |
-| `agent_casual_atmosphere`    | Perceived informality/casualness of the team atmosphere |
+These logs contain detailed records of agent interactions and are used for later analysis.
 
 ---
 
-### ⑤ `team_state.py` – Aggregated Team-Level States
+## logs/
 
-These parameters summarize emergent states at the team level.
+Stores raw logs generated during simulation execution.
 
-| Parameter                  | Description                                          |
-|----------------------------|------------------------------------------------------|
-| `team_psychological_safety` | Overall team psychological safety (e.g., average)   |
-| `team_casual_atmosphere`   | Overall team atmosphere                             |
-| `team_faultline`           | Structural faultlines or subgroup divisions          |
+These logs may contain debugging information or intermediate outputs.
 
 ---
 
-## ⏳ Update Timing
+## graphs/
 
-- State updates occur **at each round**, based on input conditions and interaction rules.
-- Parameter influences are described using **causal relations** (e.g., `value_x → opinion_position`) and are implemented in separate logic modules.
+Stores visualizations generated from simulation data.
+
+Examples include:
+
+- speaking probability distributions  
+- reaction probability changes  
+- psychological safety trajectories  
 
 ---
 
-For more detailed configuration and parameter initialization, see the `config/` directory and relevant `.py` modules.
+## paper_figs/
+
+Contains figures generated specifically for academic papers.
+
+These figures are typically created from processed simulation outputs.
+
+---
+
+## trash/
+
+Temporary or experimental scripts that are not part of the main simulation pipeline.
+
+---
+
+# Main Scripts
+
+## main.py
+
+Entry point of the simulation.
+
+Responsibilities:
+
+- initialize simulation parameters  
+- initialize agents  
+- run simulation steps  
+- record interaction data  
+
+Run the simulation with:
+
+```bash
+python main.py
+```
+
+---
+
+## make_event_log.py
+
+Processes raw simulation outputs and generates structured event logs.
+
+The event logs typically contain records such as:
+
+- simulation step  
+- speaker  
+- interaction target  
+- reaction  
+- psychological safety  
+
+These logs are stored in:
+
+```
+event_logs/
+```
+
+---
+
+## make_event_tree.py  
+## make_event_tree_bit.py
+
+These scripts reconstruct the **structure of conversational interactions** from event logs.
+
+They represent discussions as interaction trees where:
+
+- nodes represent events  
+- edges represent causal interaction relationships  
+
+These structures help analyze conversational dynamics.
+
+---
+
+## make_graphs.py
+
+Generates general visualizations from simulation logs.
+
+Outputs are stored in:
+
+```
+graphs/
+```
+
+---
+
+
+## manage_log.py
+
+Provides utilities for organizing and managing simulation logs.
+
+Typical tasks include:
+
+- merging log files  
+- cleaning log directories  
+- preparing datasets for analysis  
+
+---
+
+# Agent Parameters
+
+The simulation models agents using a set of psychological and behavioral parameters.
+
+These parameters influence how agents behave in interactions and how psychological safety evolves.
+
+---
+
+## Agent Attributes
+
+Agent properties in the simulation are organized into three categories: **personal traits**, **interpersonal impressions**, and **behaviors**.
+
+---
+
+### Personal Traits
+
+These attributes represent the internal characteristics of an agent.
+
+| Attribute | Description |
+|---|---|
+| Skill | Capability of the agent in different domains |
+| Level of Pressure | Degree of psychological pressure experienced by the agent |
+| Values | Value orientation of the agent |
+| Assertiveness | Tendency to express opinions actively |
+| Toughness | Psychological resilience when facing disagreement or criticism |
+| Extraversion | Degree of social outgoingness |
+
+---
+
+### Interpersonal Impressions
+
+These variables represent how one agent perceives another agent.
+
+| Attribute | Description |
+|---|---|
+| Hierarchy | Perceived status or hierarchy relative to another agent |
+| Efficacy | Perceived competence of another agent |
+| Interpersonal Risk | Perceived risk in interacting with another agent |
+| Psychological Safety | Degree of safety felt when interacting with another agent |
+
+---
+
+### Behaviors
+
+These variables represent observable actions during interactions.
+
+| Behavior | Description |
+|---|---|
+| Speech | Whether an agent speaks or remains silent |
+| Reaction | Whether an agent reacts to another agent's speech |
+| Agreement | Degree of agreement or disagreement |
+| Attitude | Emotional or evaluative stance toward another agent |
+
+# Output Data
+
+The simulation produces several types of outputs.
+
+---
+
+## Event Logs
+
+```
+event_logs/
+```
+
+Contain structured interaction records.
+
+Example fields:
+
+```
+step
+speaker
+target
+reaction
+psychological_safety
+```
+
+---
+
+## Graph Outputs
+
+```
+graphs/
+```
+
+Visual representations of simulation dynamics.
+
+Examples include:
+
+- speaking probability distribution  
+- reaction probability changes  
+- psychological safety trajectories  
+
+---
+
+## Paper Figures
+
+```
+paper_figs/
+```
+
+Figures used for academic publications.
+
+---
+
+# Research Objective
+
+This simulation framework is designed to reproduce and analyze the **dynamics of psychological safety in group discussions**.
+
+By modeling conversational interactions among agents, the system allows researchers to explore:
+
+- how psychological safety emerges  
+- how interpersonal interactions affect team dynamics  
+- what behavioral patterns arise in group discussions  
+
+---
+
+# Author
+
+Takumi Kanno  
+Graduate School of Systems Engineering  
+Shibaura Institute of Technology
